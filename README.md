@@ -60,6 +60,7 @@ jev-planner run --scenario config/scenarios/night-shift.yaml   # plan the shift
 jev-planner run --scenario ... --dry-run     # print the state and questions, no call
 jev-planner replay runs/example-night-shift  # re-render offline, no key needed
 jev-planner explain runs/example-night-shift --zone aisle-3 --tick 3
+jev-planner explain runs/example-night-shift --zone aisle-2 --tick 4
 jev-planner disagree runs/example-night-shift
 ```
 
@@ -86,12 +87,27 @@ Totals over the recorded night-shift run (`runs/example-night-shift/report.md`):
 Jev never drove an AGV into a zone the ground truth called `blocked`, and never
 falsely blocked a zone that was actually `clear` — the baseline's 11 false
 blocks are almost entirely aisle-3 after the spill was mopped, since the word
-"spill" never leaves the accumulated notes. The baseline's slightly shorter
-total path (99 fewer cells over the whole shift) is not evidence it planned
-better: most of that gap is the baseline driving straight through the
-junction-4 incident it never priced, which is also its one real
-`blocked violation`. Jev is not perfect either: the tick-9 aisle-5 case above
-is a real, recorded loss for the model, not a rule-based one.
+"spill" never leaves the accumulated notes. This is one twelve-tick run of one
+hand-authored scenario, not a benchmark: the questions, the notes, and the
+truth labels were all written by the people building the tool, and the tick-9
+aisle-5 drift described above shows the model's own answers moving between
+ticks on unchanged evidence. Treat the numbers here as a recorded anecdote
+with ground truth, not a claim of general accuracy.
+
+The baseline travels 99 fewer cells over the shift, but that is not a planning
+win either way. Per-tick, the gap (jev cells minus baseline cells) is
+10, 9, 4, 4, 2, 2, 0, 0, 0, 0, 38, 30 across ticks 0–11. The single biggest
+piece, 38 cells at tick 10, is the baseline driving straight through the
+stalled-AGV junction it never priced (junction-4, its one real
+`blocked violation`, and the only tick where Jev's path touches zero
+junction-4 cells against the baseline's 25). The 31 cells spread across ticks
+0–5 predate that incident entirely and are just Jev routing more cautiously
+through ordinary elevated-cost zones. The remaining 30 cells, at tick 11,
+cut the other way: junction-4 is back to `clear` there, the incident is over,
+and Jev's paths still pass through *more* junction-4 cells (48) than the
+baseline's (25) — caution that this ground truth says was no longer needed.
+Shorter paths are what you get for ignoring hazards, and longer ones are what
+you get for staying wary past the point they resolve; this run has both.
 
 ## What it does not do
 
