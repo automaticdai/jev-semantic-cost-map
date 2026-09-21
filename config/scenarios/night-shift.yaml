@@ -1,0 +1,74 @@
+name: night-shift
+world: warehouse.yaml
+cells_per_tick: 12
+
+# `truth` is the hidden ground truth, authored by hand and never sent to the
+# model. It does not persist: every tick states every non-clear zone.
+ticks:
+  - clock: "13:00"
+
+  - clock: "13:10"
+    events:
+      - zone: aisle-3
+        note: "13:08 Pallet wrap spill reported at the north end of aisle 3. Nobody has been out to it yet."
+    truth: {aisle-3: blocked}
+
+  - clock: "13:20"
+    events:
+      - zone: bay-B
+        note: "13:18 Two pickers working bay B until 14:00. They are staying between the racks, clear of the AGV travel lane."
+    truth: {aisle-3: blocked, bay-B: avoid}
+
+  - clock: "13:30"
+    events:
+      - zone: aisle-3
+        note: "13:28 Spill mopped, floor dried and signed off by the shift lead."
+    truth: {bay-B: avoid}
+
+  - clock: "13:40"
+    events:
+      - zone: aisle-2
+        note: "13:38 Stock count under way in aisle 2. The counter is stepping in and out of the lane to read the low shelves."
+    truth: {aisle-2: blocked, bay-B: avoid}
+
+  - clock: "13:50"
+    events:
+      - zone: staging-7
+        note: "13:48 Glassware pallets staged on the floor in staging 7. Shrink wrap has split on one of them."
+    truth: {aisle-2: blocked, bay-B: avoid, staging-7: avoid}
+
+  - clock: "14:00"
+    events:
+      - zone: bay-B
+        note: "14:00 The pickers have finished in bay B and signed off the floor."
+    truth: {aisle-2: blocked, staging-7: avoid}
+
+  - clock: "14:10"
+    events:
+      - zone: aisle-5
+        note: "14:08 Hydraulic fluid leaking from a pallet truck at the north end of aisle 5. Not yet cleaned."
+    truth: {aisle-2: blocked, aisle-5: blocked, staging-7: avoid}
+
+  - clock: "14:20"
+    events:
+      - zone: aisle-2
+        note: "14:18 Stock count finished. Aisle 2 is clear and back in service."
+    truth: {aisle-5: blocked, staging-7: avoid}
+
+  - clock: "14:30"
+    events:
+      - zone: junction-4
+        note: "14:28 AGV-7 has stalled across the south-east cross corridor and is waiting on a technician."
+    truth: {aisle-5: blocked, junction-4: blocked, staging-7: avoid}
+
+  - clock: "14:40"
+    events:
+      - zone: aisle-5
+        note: "14:38 Hydraulic leak cleaned, floor dried, aisle 5 signed back into service."
+    truth: {junction-4: blocked, staging-7: avoid}
+
+  - clock: "14:50"
+    events:
+      - zone: junction-4
+        note: "14:48 Technician recovered AGV-7. The south-east corridor is clear."
+    truth: {staging-7: avoid}
