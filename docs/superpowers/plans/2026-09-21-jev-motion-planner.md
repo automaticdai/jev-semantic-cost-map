@@ -221,6 +221,12 @@ packages = ["src/jev_planner"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# `pythonpath` puts the repo root on sys.path so `from tests.helpers import ...`
+# resolves under the src layout. `addopts` keeps the live test out of the default
+# suite even when TYPESAFE_API_KEY is exported; `-m live` on the command line
+# overrides it.
+pythonpath = ["."]
+addopts = ["-m", "not live"]
 markers = ["live: hits the real TypeSafe API; skipped without TYPESAFE_API_KEY"]
 ```
 
@@ -3134,7 +3140,7 @@ Counting rules, fixed so the numbers mean one thing:
 - `false_blocks` counts zones the model called blocked whose truth is `clear`. It is per zone, not per AGV.
 - `path_cells` is the total number of moves across all AGVs, so caution can be priced against distance.
 - A deferred AGV contributes no violations and no cells, and one to `deferrals`.
-- The starting cell is excluded; an AGV already standing in a zone did not choose to enter it this tick.
+- The **starting zone** is excluded, not merely the starting cell: an AGV already standing in a zone did not choose to enter it this tick, and it is not charged for the cells it drives while leaving.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -3170,10 +3176,13 @@ def test_entering_a_blocked_zone_is_one_violation_per_agv():
     assert s.path_cells == 3
 
 
-def test_the_starting_cell_does_not_count_as_an_entry():
-    plans = {"agv-1": Plan("agv-1", ((0, 1), (1, 1)), 1.0, False)}
+def test_the_zone_the_agv_started_in_does_not_count_as_an_entry():
+    # agv-1 begins inside aisle-1 and drives out of it. It did not choose to be
+    # there, so leaving is not a violation.
+    plans = {"agv-1": Plan("agv-1", ((0, 1), (1, 1), (1, 4)), 2.0, False)}
     s = score_tick(world(), {"aisle-1": "blocked", "aisle-2": "clear"}, costs(), plans)
     assert s.blocked_violations == 0
+    assert s.path_cells == 2
 
 
 def test_avoid_is_counted_separately():
@@ -3302,7 +3311,14 @@ class TickScore:
 
 
 def _zones_entered(world: World, path: Sequence[Cell]) -> set[str]:
-    return {z for z in (world.zone_at(cell) for cell in path[1:]) if z}
+    """Zones the AGV moved into this tick.
+
+    The zone it was already standing in is excluded: it did not choose to enter
+    that one, so charging it a violation would punish an AGV for where the last
+    tick left it.
+    """
+    start = world.zone_at(path[0])
+    return {z for z in (world.zone_at(cell) for cell in path[1:]) if z and z != start}
 
 
 def score_tick(
