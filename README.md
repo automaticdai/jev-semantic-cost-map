@@ -86,9 +86,10 @@ Totals over the recorded night-shift run (`runs/example-night-shift/report.md`):
 Jev never drove an AGV into a zone the ground truth called `blocked`, and never
 falsely blocked a zone that was actually `clear` — the baseline's 11 false
 blocks are almost entirely aisle-3 after the spill was mopped, since the word
-"spill" never leaves the accumulated notes. The one place the baseline is
-strictly safer on paper (its single fewer `path cells`) comes from routing
-through the junction-4 incident it cannot see, which is also its one real
+"spill" never leaves the accumulated notes. The baseline's slightly shorter
+total path (99 fewer cells over the whole shift) is not evidence it planned
+better: most of that gap is the baseline driving straight through the
+junction-4 incident it never priced, which is also its one real
 `blocked violation`. Jev is not perfect either: the tick-9 aisle-5 case above
 is a real, recorded loss for the model, not a rule-based one.
 
