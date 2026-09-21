@@ -1,7 +1,7 @@
 """Small synthetic worlds and cost layers for planner tests."""
 
-from jev_planner.costs import CostLayer, ZoneCost, rasterize
-from jev_planner.world import World, load_world
+from jev_costmap.costs import CostLayer, ZoneCost, rasterize
+from jev_costmap.world import World, load_world
 
 
 def grid_world(width: int, height: int) -> World:

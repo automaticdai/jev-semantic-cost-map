@@ -1,7 +1,7 @@
 import pytest
 import yaml
 
-from jev_planner.events import initial_agvs, load_scenario, state_at
+from jev_costmap.events import initial_agvs, load_scenario, state_at
 
 
 def scenario():

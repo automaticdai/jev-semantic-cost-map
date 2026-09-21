@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
 
-from jev_planner.baseline import DEFAULT_RULES, Rule, baseline_costs, baseline_layer, load_rules
-from jev_planner.events import WorldState
-from jev_planner.world import load_world_file
+from jev_costmap.baseline import DEFAULT_RULES, Rule, baseline_costs, baseline_layer, load_rules
+from jev_costmap.events import WorldState
+from jev_costmap.world import load_world_file
 
 
 def world():

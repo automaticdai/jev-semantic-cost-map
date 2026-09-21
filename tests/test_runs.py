@@ -3,7 +3,7 @@ import datetime as dt
 import numpy as np
 import pytest
 
-from jev_planner.runs import RunDir
+from jev_costmap.runs import RunDir
 
 
 def test_create_names_the_directory_by_time_and_scenario(tmp_path):

@@ -3,12 +3,12 @@ import re
 
 import pytest
 
-from jev_planner.baseline import DEFAULT_RULES
-from jev_planner.costs import DEFAULT_WEIGHTS, ZoneCost
-from jev_planner.events import load_scenario
-from jev_planner.judge import Judge
-from jev_planner.planner import Plan
-from jev_planner.report import (
+from jev_costmap.baseline import DEFAULT_RULES
+from jev_costmap.costs import DEFAULT_WEIGHTS, ZoneCost
+from jev_costmap.events import load_scenario
+from jev_costmap.judge import Judge
+from jev_costmap.planner import Plan
+from jev_costmap.report import (
     _costs_of,
     disagree_text,
     explain_text,
@@ -16,9 +16,9 @@ from jev_planner.report import (
     score_tick,
     write_report,
 )
-from jev_planner.runs import RunDir
-from jev_planner.shift import run_shift
-from jev_planner.world import load_world_file
+from jev_costmap.runs import RunDir
+from jev_costmap.shift import run_shift
+from jev_costmap.world import load_world_file
 from tests.test_shift import CalmClient
 
 
@@ -182,7 +182,7 @@ def test_disagree_reports_the_spill_the_baseline_will_not_release(tmp_path):
 
 
 def test_a_difference_of_degree_is_not_scored_as_a_win(tmp_path):
-    from jev_planner.report import _verdict
+    from jev_costmap.report import _verdict
 
     assert _verdict(False, False, "clear") == "degree only"
     assert _verdict(False, False, "avoid") == "degree only"

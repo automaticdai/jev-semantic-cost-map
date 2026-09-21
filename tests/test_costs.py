@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from jev_planner.costs import (
+from jev_costmap.costs import (
     BLOCK_THRESHOLD,
     DEFAULT_WEIGHTS,
     Weights,
@@ -9,7 +9,7 @@ from jev_planner.costs import (
     load_weights,
     rasterize,
 )
-from jev_planner.world import load_world_file
+from jev_costmap.world import load_world_file
 
 
 def world():

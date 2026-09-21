@@ -3,7 +3,7 @@ import json
 import pytest
 from typesafe_sdk import Noul, Score, SystemOneResponse
 
-from jev_planner.judge import Judge, Judgment, MissingAnswerError, cache_key
+from jev_costmap.judge import Judge, Judgment, MissingAnswerError, cache_key
 
 STATE = {"shift": {"clock": "13:00"}, "zones": {}, "agvs": {}}
 QUESTIONS = {

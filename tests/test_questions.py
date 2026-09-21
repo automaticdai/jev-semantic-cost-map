@@ -3,7 +3,7 @@ from pathlib import Path
 
 from typesafe_sdk import Noul, Score
 
-from jev_planner.questions import (
+from jev_costmap.questions import (
     DAMAGE_LEVELS,
     DELAY_LEVELS,
     DIMENSIONS,
@@ -11,7 +11,7 @@ from jev_planner.questions import (
     build_questions,
     question_id,
 )
-from jev_planner.world import load_world_file
+from jev_costmap.world import load_world_file
 
 
 def world():

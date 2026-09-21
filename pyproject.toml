@@ -1,7 +1,7 @@
 [project]
-name = "jev-path-planning"
+name = "jev-semantic-cost-map"
 version = "0.1.0"
-description = "Path planning where Jev judges the scene and code owns the geometry"
+description = "A semantic cost map: Jev judges the scene, code owns the geometry"
 requires-python = ">=3.12"
 dependencies = [
     "typesafe-sdk>=0.7",
@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.scripts]
-jev-planner = "jev_planner.cli:main"
+jev-costmap = "jev_costmap.cli:main"
 
 [dependency-groups]
 # httpx2 is used directly by tests/test_shift.py (to build a TypeSafeAPIError's
@@ -26,7 +26,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/jev_planner"]
+packages = ["src/jev_costmap"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

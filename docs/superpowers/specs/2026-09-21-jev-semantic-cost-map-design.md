@@ -1,4 +1,4 @@
-# jev-path-planning — design
+# jev-semantic-cost-map — design
 
 Date: 2026-09-21
 Status: approved, ready for implementation planning
@@ -55,8 +55,8 @@ them):
 
 ## Package and dependencies
 
-Repository `jev-path-planning`, Python package `jev_planner` under `src/`, console
-script `jev-planner`. Python 3.12, managed with `uv`.
+Repository `jev-semantic-cost-map`, Python package `jev_costmap` under `src/`, console
+script `jev-costmap`. Python 3.12, managed with `uv`.
 
 Runtime dependencies: `typesafe-sdk`, `numpy`, `matplotlib`, `pyyaml`, `pillow`
 (matplotlib's `PillowWriter` writes the GIF). Development: `pytest`.
@@ -84,7 +84,7 @@ so a recorded run re-renders offline with no API key.
 
 ### Modules
 
-`src/jev_planner/`
+`src/jev_costmap/`
 
 | Module | Responsibility | Depends on |
 | --- | --- | --- |
@@ -305,11 +305,11 @@ which is an anecdote.
 ## CLI
 
 ```
-jev-planner run --scenario config/scenarios/night-shift.yaml [--out runs/<id>]
-jev-planner run --scenario ... --dry-run     # print tick 0 state + questions, no call
-jev-planner replay runs/<id>                  # re-render from stored answers, offline
-jev-planner explain runs/<id> --zone aisle-3 [--tick 4]
-jev-planner disagree runs/<id>
+jev-costmap run --scenario config/scenarios/night-shift.yaml [--out runs/<id>]
+jev-costmap run --scenario ... --dry-run     # print tick 0 state + questions, no call
+jev-costmap replay runs/<id>                  # re-render from stored answers, offline
+jev-costmap explain runs/<id> --zone aisle-3 [--tick 4]
+jev-costmap disagree runs/<id>
 ```
 
 `replay`, `explain`, `disagree` and `--dry-run` require no API key.

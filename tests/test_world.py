@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import yaml
 
-from jev_planner.world import load_world
+from jev_costmap.world import load_world
 
 
 def mini() -> dict:

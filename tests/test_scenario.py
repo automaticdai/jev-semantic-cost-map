@@ -1,9 +1,9 @@
 import pytest
 
-from jev_planner.baseline import DEFAULT_RULES, baseline_costs, load_rules
-from jev_planner.costs import DEFAULT_WEIGHTS, load_weights
-from jev_planner.events import initial_agvs, load_scenario, state_at
-from jev_planner.planner import plan_single
+from jev_costmap.baseline import DEFAULT_RULES, baseline_costs, load_rules
+from jev_costmap.costs import DEFAULT_WEIGHTS, load_weights
+from jev_costmap.events import initial_agvs, load_scenario, state_at
+from jev_costmap.planner import plan_single
 from tests.helpers import uniform_layer
 
 SCENARIO = "config/scenarios/night-shift.yaml"

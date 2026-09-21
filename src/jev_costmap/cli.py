@@ -1,4 +1,4 @@
-"""The jev-planner command line."""
+"""The jev-costmap command line."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from .state import build_state
 
 
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="jev-planner")
+    parser = argparse.ArgumentParser(prog="jev-costmap")
     sub = parser.add_subparsers(dest="command", required=True)
 
     run = sub.add_parser("run", help="plan a whole shift")

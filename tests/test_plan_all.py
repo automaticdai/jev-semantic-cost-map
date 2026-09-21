@@ -1,6 +1,6 @@
 import pytest
 
-from jev_planner.planner import PlanRequest, plan_all
+from jev_costmap.planner import PlanRequest, plan_all
 from tests.helpers import grid_world, uniform_layer
 
 

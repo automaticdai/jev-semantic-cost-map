@@ -1,4 +1,4 @@
-# jev-path-planning Implementation Plan
+# jev-semantic-cost-map Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -8,11 +8,11 @@
 
 **Tech Stack:** Python 3.12, uv, `typesafe-sdk` 0.7, numpy, matplotlib (+pillow for GIF), pyyaml, pytest.
 
-**Spec:** `docs/superpowers/specs/2026-09-21-jev-path-planning-design.md`
+**Spec:** `docs/superpowers/specs/2026-09-21-jev-semantic-cost-map-design.md`
 
 ## Global Constraints
 
-- Python 3.12; dependencies managed with `uv`. Package `jev_planner` under `src/`, console script `jev-planner`.
+- Python 3.12; dependencies managed with `uv`. Package `jev_costmap` under `src/`, console script `jev-costmap`.
 - Grid arrays are numpy and indexed `[y, x]`. Cells are `(x, y)` tuples everywhere else. Never mix these.
 - Only `judge.py` performs network I/O. Every other module operates on stored data.
 - The default pytest suite makes no network calls. The one live test is `@pytest.mark.live` and skips without `TYPESAFE_API_KEY`.
@@ -53,19 +53,19 @@ Question ids containing `.` and `-` are accepted.
 | File | Responsibility |
 | --- | --- |
 | `pyproject.toml` | packaging, deps, console script, pytest config |
-| `src/jev_planner/world.py` | `Zone`, `Station`, `AgvSpec`, `World`, `load_world`; rasterization |
-| `src/jev_planner/events.py` | `Event`, `AgvState`, `WorldState`, `Scenario`, `load_scenario`, `state_at` |
-| `src/jev_planner/state.py` | `build_state` — `WorldState` → the JSON dict sent to Jev |
-| `src/jev_planner/questions.py` | level texts, `build_questions` |
-| `src/jev_planner/judge.py` | `Judgment`, `Judge`, `MissingAnswerError`, on-disk cache |
-| `src/jev_planner/costs.py` | `Weights`, `ZoneCost`, `CostLayer`, `fuse`, `rasterize` |
-| `src/jev_planner/baseline.py` | `Rule`, `load_rules`, `baseline_layer` |
-| `src/jev_planner/planner.py` | `Plan`, `Reservations`, `plan_single`, `plan_all` |
-| `src/jev_planner/runs.py` | `RunDir`, manifest read/write |
-| `src/jev_planner/shift.py` | the per-tick orchestration loop (an addition to the spec's module list: the loop does not belong in `cli.py`) |
-| `src/jev_planner/render.py` | frames and GIF |
-| `src/jev_planner/report.py` | scoring, `report.md`, `explain`, `disagree` |
-| `src/jev_planner/cli.py` | argparse subcommands |
+| `src/jev_costmap/world.py` | `Zone`, `Station`, `AgvSpec`, `World`, `load_world`; rasterization |
+| `src/jev_costmap/events.py` | `Event`, `AgvState`, `WorldState`, `Scenario`, `load_scenario`, `state_at` |
+| `src/jev_costmap/state.py` | `build_state` — `WorldState` → the JSON dict sent to Jev |
+| `src/jev_costmap/questions.py` | level texts, `build_questions` |
+| `src/jev_costmap/judge.py` | `Judgment`, `Judge`, `MissingAnswerError`, on-disk cache |
+| `src/jev_costmap/costs.py` | `Weights`, `ZoneCost`, `CostLayer`, `fuse`, `rasterize` |
+| `src/jev_costmap/baseline.py` | `Rule`, `load_rules`, `baseline_layer` |
+| `src/jev_costmap/planner.py` | `Plan`, `Reservations`, `plan_single`, `plan_all` |
+| `src/jev_costmap/runs.py` | `RunDir`, manifest read/write |
+| `src/jev_costmap/shift.py` | the per-tick orchestration loop (an addition to the spec's module list: the loop does not belong in `cli.py`) |
+| `src/jev_costmap/render.py` | frames and GIF |
+| `src/jev_costmap/report.py` | scoring, `report.md`, `explain`, `disagree` |
+| `src/jev_costmap/cli.py` | argparse subcommands |
 | `config/weights.yaml`, `config/rules.yaml` | fusion weights, baseline rules |
 | `config/scenarios/night-shift.yaml` | the primary scenario |
 | `tests/fixtures/mini.yaml` | a 10x8 two-aisle world used by most tests |
@@ -76,7 +76,7 @@ Question ids containing `.` and `-` are accepted.
 ### Task 1: Project scaffolding and the world model
 
 **Files:**
-- Create: `pyproject.toml`, `.gitignore`, `src/jev_planner/__init__.py`, `src/jev_planner/world.py`, `tests/fixtures/mini.yaml`
+- Create: `pyproject.toml`, `.gitignore`, `src/jev_costmap/__init__.py`, `src/jev_costmap/world.py`, `tests/fixtures/mini.yaml`
 - Test: `tests/test_world.py`
 
 **Interfaces:**
@@ -125,7 +125,7 @@ import numpy as np
 import pytest
 import yaml
 
-from jev_planner.world import load_world
+from jev_costmap.world import load_world
 
 
 def mini() -> dict:
@@ -186,7 +186,7 @@ def test_zone_outside_the_grid_is_rejected():
 uv run pytest tests/test_world.py -v
 ```
 
-Expected: collection error, `ModuleNotFoundError: No module named 'jev_planner'`.
+Expected: collection error, `ModuleNotFoundError: No module named 'jev_costmap'`.
 
 - [ ] **Step 3: Write the scaffolding**
 
@@ -194,7 +194,7 @@ Expected: collection error, `ModuleNotFoundError: No module named 'jev_planner'`
 
 ```toml
 [project]
-name = "jev-path-planning"
+name = "jev-semantic-cost-map"
 version = "0.1.0"
 description = "Path planning where Jev judges the scene and code owns the geometry"
 requires-python = ">=3.12"
@@ -207,7 +207,7 @@ dependencies = [
 ]
 
 [project.scripts]
-jev-planner = "jev_planner.cli:main"
+jev-costmap = "jev_costmap.cli:main"
 
 [dependency-groups]
 dev = ["pytest>=8.0"]
@@ -217,7 +217,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/jev_planner"]
+packages = ["src/jev_costmap"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -242,11 +242,11 @@ runs/*
 !runs/example-night-shift/
 ```
 
-`src/jev_planner/__init__.py`: empty file.
+`src/jev_costmap/__init__.py`: empty file.
 
 - [ ] **Step 4: Write the world model**
 
-`src/jev_planner/world.py`:
+`src/jev_costmap/world.py`:
 
 ```python
 """The static warehouse: geometry, named zones, stations and AGV specs.
@@ -407,7 +407,7 @@ git commit -m "$(printf 'feat: warehouse world model and project scaffolding\n\n
 ### Task 2: Scenario and per-tick world state
 
 **Files:**
-- Create: `src/jev_planner/events.py`
+- Create: `src/jev_costmap/events.py`
 - Test: `tests/test_events.py`
 - Modify: `tests/fixtures/mini.yaml` is reused unchanged; add `tests/fixtures/mini-scenario.yaml`
 
@@ -437,7 +437,7 @@ ticks:
 `tests/test_events.py`:
 
 ```python
-from jev_planner.events import initial_agvs, load_scenario, state_at
+from jev_costmap.events import initial_agvs, load_scenario, state_at
 
 
 def scenario():
@@ -498,11 +498,11 @@ def test_states_are_independent_snapshots():
 uv run pytest tests/test_events.py -v
 ```
 
-Expected: `ModuleNotFoundError: No module named 'jev_planner.events'`.
+Expected: `ModuleNotFoundError: No module named 'jev_costmap.events'`.
 
 - [ ] **Step 3: Write the implementation**
 
-`src/jev_planner/events.py`:
+`src/jev_costmap/events.py`:
 
 ```python
 """The scripted shift: events that change what zones mean, tick by tick."""
@@ -644,7 +644,7 @@ Expected: 6 passed.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/jev_planner/events.py tests/test_events.py tests/fixtures/mini-scenario.yaml
+git add src/jev_costmap/events.py tests/test_events.py tests/fixtures/mini-scenario.yaml
 git commit -m "$(printf 'feat: scenario loading and per-tick world state\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -653,7 +653,7 @@ git commit -m "$(printf 'feat: scenario loading and per-tick world state\n\nCo-A
 ### Task 3: The state sent to Jev
 
 **Files:**
-- Create: `src/jev_planner/state.py`
+- Create: `src/jev_costmap/state.py`
 - Test: `tests/test_state.py`
 
 **Interfaces:**
@@ -669,8 +669,8 @@ The test that the truth labels never reach the state is the one protecting the w
 ```python
 import json
 
-from jev_planner.events import AgvState, initial_agvs, load_scenario, state_at
-from jev_planner.state import build_state
+from jev_costmap.events import AgvState, initial_agvs, load_scenario, state_at
+from jev_costmap.state import build_state
 
 
 def built(tick: int = 2):
@@ -716,11 +716,11 @@ def test_state_is_json_serialisable():
 uv run pytest tests/test_state.py -v
 ```
 
-Expected: `ModuleNotFoundError: No module named 'jev_planner.state'`.
+Expected: `ModuleNotFoundError: No module named 'jev_costmap.state'`.
 
 - [ ] **Step 3: Write the implementation**
 
-`src/jev_planner/state.py`:
+`src/jev_costmap/state.py`:
 
 ```python
 """Turn a WorldState into the JSON `state` Jev receives.
@@ -770,7 +770,7 @@ Expected: 5 passed.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/jev_planner/state.py tests/test_state.py
+git add src/jev_costmap/state.py tests/test_state.py
 git commit -m "$(printf 'feat: build the Jev state, with truth labels held back\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -779,7 +779,7 @@ git commit -m "$(printf 'feat: build the Jev state, with truth labels held back\
 ### Task 4: The questions
 
 **Files:**
-- Create: `src/jev_planner/questions.py`
+- Create: `src/jev_costmap/questions.py`
 - Test: `tests/test_questions.py`
 
 **Interfaces:**
@@ -795,7 +795,7 @@ Questions depend only on the world's zone ids, never on the tick, so they are id
 ```python
 from typesafe_sdk import Noul, Score
 
-from jev_planner.questions import (
+from jev_costmap.questions import (
     DAMAGE_LEVELS,
     DELAY_LEVELS,
     DIMENSIONS,
@@ -803,7 +803,7 @@ from jev_planner.questions import (
     build_questions,
     question_id,
 )
-from jev_planner.world import load_world_file
+from jev_costmap.world import load_world_file
 
 
 def world():
@@ -849,11 +849,11 @@ def test_a_question_mentions_no_other_zone():
 uv run pytest tests/test_questions.py -v
 ```
 
-Expected: `ModuleNotFoundError: No module named 'jev_planner.questions'`.
+Expected: `ModuleNotFoundError: No module named 'jev_costmap.questions'`.
 
 - [ ] **Step 3: Write the implementation**
 
-`src/jev_planner/questions.py`:
+`src/jev_costmap/questions.py`:
 
 ```python
 """Four judgments per zone: three graded dimensions and one hard gate."""
@@ -942,7 +942,7 @@ Expected: 5 passed.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/jev_planner/questions.py tests/test_questions.py
+git add src/jev_costmap/questions.py tests/test_questions.py
 git commit -m "$(printf 'feat: four Jev judgments per warehouse zone\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -951,7 +951,7 @@ git commit -m "$(printf 'feat: four Jev judgments per warehouse zone\n\nCo-Autho
 ### Task 5: Calling Jev
 
 **Files:**
-- Create: `src/jev_planner/judge.py`
+- Create: `src/jev_costmap/judge.py`
 - Test: `tests/test_judge.py`
 
 **Interfaces:**
@@ -973,7 +973,7 @@ import json
 import pytest
 from typesafe_sdk import Noul, Score, SystemOneResponse
 
-from jev_planner.judge import Judge, Judgment, MissingAnswerError, cache_key
+from jev_costmap.judge import Judge, Judgment, MissingAnswerError, cache_key
 
 STATE = {"shift": {"clock": "13:00"}, "zones": {}, "agvs": {}}
 QUESTIONS = {
@@ -1066,11 +1066,11 @@ def test_cache_key_depends_on_the_model(tmp_path):
 uv run pytest tests/test_judge.py -v
 ```
 
-Expected: `ModuleNotFoundError: No module named 'jev_planner.judge'`.
+Expected: `ModuleNotFoundError: No module named 'jev_costmap.judge'`.
 
 - [ ] **Step 3: Write the implementation**
 
-`src/jev_planner/judge.py`:
+`src/jev_costmap/judge.py`:
 
 ```python
 """The only module that talks to the network."""
@@ -1203,7 +1203,7 @@ Expected: 7 passed.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/jev_planner/judge.py tests/test_judge.py
+git add src/jev_costmap/judge.py tests/test_judge.py
 git commit -m "$(printf 'feat: Jev client with an on-disk judgment cache\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -1212,7 +1212,7 @@ git commit -m "$(printf 'feat: Jev client with an on-disk judgment cache\n\nCo-A
 ### Task 6: Fusing judgments into a cost layer
 
 **Files:**
-- Create: `src/jev_planner/costs.py`, `config/weights.yaml`
+- Create: `src/jev_costmap/costs.py`, `config/weights.yaml`
 - Test: `tests/test_costs.py`
 
 **Interfaces:**
@@ -1228,7 +1228,7 @@ git commit -m "$(printf 'feat: Jev client with an on-disk judgment cache\n\nCo-A
 import numpy as np
 import pytest
 
-from jev_planner.costs import (
+from jev_costmap.costs import (
     BLOCK_THRESHOLD,
     DEFAULT_WEIGHTS,
     Weights,
@@ -1236,7 +1236,7 @@ from jev_planner.costs import (
     load_weights,
     rasterize,
 )
-from jev_planner.world import load_world_file
+from jev_costmap.world import load_world_file
 
 
 def world():
@@ -1325,7 +1325,7 @@ def test_weights_load_from_yaml(tmp_path):
 uv run pytest tests/test_costs.py -v
 ```
 
-Expected: `ModuleNotFoundError: No module named 'jev_planner.costs'`.
+Expected: `ModuleNotFoundError: No module named 'jev_costmap.costs'`.
 
 - [ ] **Step 3: Write the config**
 
@@ -1341,7 +1341,7 @@ delay: 1.5
 
 - [ ] **Step 4: Write the implementation**
 
-`src/jev_planner/costs.py`:
+`src/jev_costmap/costs.py`:
 
 ```python
 """Turn typed judgments into numbers the planner can search over.
@@ -1447,7 +1447,7 @@ Expected: 9 passed.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add src/jev_planner/costs.py config/weights.yaml tests/test_costs.py
+git add src/jev_costmap/costs.py config/weights.yaml tests/test_costs.py
 git commit -m "$(printf 'feat: fuse judgments into a rasterized cost layer\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -1456,7 +1456,7 @@ git commit -m "$(printf 'feat: fuse judgments into a rasterized cost layer\n\nCo
 ### Task 7: The keyword rule baseline
 
 **Files:**
-- Create: `src/jev_planner/baseline.py`, `config/rules.yaml`
+- Create: `src/jev_costmap/baseline.py`, `config/rules.yaml`
 - Test: `tests/test_baseline.py`
 
 **Interfaces:**
@@ -1472,9 +1472,9 @@ git commit -m "$(printf 'feat: fuse judgments into a rasterized cost layer\n\nCo
 import numpy as np
 import pytest
 
-from jev_planner.baseline import DEFAULT_RULES, Rule, baseline_costs, baseline_layer, load_rules
-from jev_planner.events import WorldState
-from jev_planner.world import load_world_file
+from jev_costmap.baseline import DEFAULT_RULES, Rule, baseline_costs, baseline_layer, load_rules
+from jev_costmap.events import WorldState
+from jev_costmap.world import load_world_file
 
 
 def world():
@@ -1551,7 +1551,7 @@ def test_rules_load_from_yaml(tmp_path):
 uv run pytest tests/test_baseline.py -v
 ```
 
-Expected: `ModuleNotFoundError: No module named 'jev_planner.baseline'`.
+Expected: `ModuleNotFoundError: No module named 'jev_costmap.baseline'`.
 
 - [ ] **Step 3: Write the config**
 
@@ -1569,7 +1569,7 @@ Expected: `ModuleNotFoundError: No module named 'jev_planner.baseline'`.
 
 - [ ] **Step 4: Write the implementation**
 
-`src/jev_planner/baseline.py`:
+`src/jev_costmap/baseline.py`:
 
 ```python
 """A keyword cost model, planned alongside Jev so the demo can be checked.
@@ -1662,7 +1662,7 @@ Expected: 9 passed.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add src/jev_planner/baseline.py config/rules.yaml tests/test_baseline.py
+git add src/jev_costmap/baseline.py config/rules.yaml tests/test_baseline.py
 git commit -m "$(printf 'feat: keyword rule baseline over the same world states\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -1671,7 +1671,7 @@ git commit -m "$(printf 'feat: keyword rule baseline over the same world states\
 ### Task 8: Space-time A\* for one AGV
 
 **Files:**
-- Create: `src/jev_planner/planner.py`, `tests/helpers.py`
+- Create: `src/jev_costmap/planner.py`, `tests/helpers.py`
 - Test: `tests/test_planner.py`
 
 **Interfaces:**
@@ -1691,8 +1691,8 @@ Two rules the implementation must get right, because both look fine on a rendere
 ```python
 """Small synthetic worlds and cost layers for planner tests."""
 
-from jev_planner.costs import CostLayer, ZoneCost, rasterize
-from jev_planner.world import World, load_world
+from jev_costmap.costs import CostLayer, ZoneCost, rasterize
+from jev_costmap.world import World, load_world
 
 
 def grid_world(width: int, height: int) -> World:
@@ -1748,7 +1748,7 @@ def uniform_layer(world: World, multipliers=None, blocked=()) -> CostLayer:
 ```python
 import pytest
 
-from jev_planner.planner import HORIZON, Plan, Reservations, plan_single
+from jev_costmap.planner import HORIZON, Plan, Reservations, plan_single
 from tests.helpers import grid_world, uniform_layer
 
 
@@ -1851,11 +1851,11 @@ def test_the_horizon_is_respected():
 uv run pytest tests/test_planner.py -v
 ```
 
-Expected: `ModuleNotFoundError: No module named 'jev_planner.planner'`.
+Expected: `ModuleNotFoundError: No module named 'jev_costmap.planner'`.
 
 - [ ] **Step 4: Write the implementation**
 
-`src/jev_planner/planner.py`:
+`src/jev_costmap/planner.py`:
 
 ```python
 """Search over (cell, timestep) on a semantic cost layer.
@@ -1997,7 +1997,7 @@ Expected: 12 passed.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add src/jev_planner/planner.py tests/test_planner.py tests/helpers.py
+git add src/jev_costmap/planner.py tests/test_planner.py tests/helpers.py
 git commit -m "$(printf 'feat: space-time A* with vertex and edge reservations\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -2006,7 +2006,7 @@ git commit -m "$(printf 'feat: space-time A* with vertex and edge reservations\n
 ### Task 9: Prioritized planning for all AGVs
 
 **Files:**
-- Modify: `src/jev_planner/planner.py` (append; do not change `plan_single`)
+- Modify: `src/jev_costmap/planner.py` (append; do not change `plan_single`)
 - Test: `tests/test_plan_all.py`
 
 **Interfaces:**
@@ -2020,7 +2020,7 @@ git commit -m "$(printf 'feat: space-time A* with vertex and edge reservations\n
 ```python
 import pytest
 
-from jev_planner.planner import PlanRequest, plan_all
+from jev_costmap.planner import PlanRequest, plan_all
 from tests.helpers import grid_world, uniform_layer
 
 
@@ -2166,7 +2166,7 @@ Expected: 17 passed.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/jev_planner/planner.py tests/test_plan_all.py
+git add src/jev_costmap/planner.py tests/test_plan_all.py
 git commit -m "$(printf 'feat: prioritized multi-AGV planning with deferrals\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -2175,7 +2175,7 @@ git commit -m "$(printf 'feat: prioritized multi-AGV planning with deferrals\n\n
 ### Task 10: The run directory
 
 **Files:**
-- Create: `src/jev_planner/runs.py`
+- Create: `src/jev_costmap/runs.py`
 - Test: `tests/test_runs.py`
 
 **Interfaces:**
@@ -2193,7 +2193,7 @@ import datetime as dt
 
 import pytest
 
-from jev_planner.runs import RunDir
+from jev_costmap.runs import RunDir
 
 
 def test_create_names_the_directory_by_time_and_scenario(tmp_path):
@@ -2239,11 +2239,11 @@ def test_open_rejects_a_directory_with_no_manifest(tmp_path):
 uv run pytest tests/test_runs.py -v
 ```
 
-Expected: `ModuleNotFoundError: No module named 'jev_planner.runs'`.
+Expected: `ModuleNotFoundError: No module named 'jev_costmap.runs'`.
 
 - [ ] **Step 3: Write the implementation**
 
-`src/jev_planner/runs.py`:
+`src/jev_costmap/runs.py`:
 
 ```python
 """On-disk layout of a run. Everything a replay needs lives here."""
@@ -2323,7 +2323,7 @@ Expected: 6 passed.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/jev_planner/runs.py tests/test_runs.py
+git add src/jev_costmap/runs.py tests/test_runs.py
 git commit -m "$(printf 'feat: run directory and manifest\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -2332,7 +2332,7 @@ git commit -m "$(printf 'feat: run directory and manifest\n\nCo-Authored-By: Cla
 ### Task 11: The shift loop and `run`
 
 **Files:**
-- Create: `src/jev_planner/shift.py`, `src/jev_planner/cli.py`
+- Create: `src/jev_costmap/shift.py`, `src/jev_costmap/cli.py`
 - Test: `tests/test_shift.py`, `tests/test_cli.py`
 
 **Interfaces:**
@@ -2361,13 +2361,13 @@ import datetime as dt
 import pytest
 from typesafe_sdk import SystemOneResponse, TypeSafeAPIError
 
-from jev_planner.baseline import DEFAULT_RULES
-from jev_planner.costs import DEFAULT_WEIGHTS
-from jev_planner.events import initial_agvs, load_scenario
-from jev_planner.judge import Judge
-from jev_planner.planner import Plan
-from jev_planner.runs import RunDir
-from jev_planner.shift import ShiftAborted, advance, run_shift
+from jev_costmap.baseline import DEFAULT_RULES
+from jev_costmap.costs import DEFAULT_WEIGHTS
+from jev_costmap.events import initial_agvs, load_scenario
+from jev_costmap.judge import Judge
+from jev_costmap.planner import Plan
+from jev_costmap.runs import RunDir
+from jev_costmap.shift import ShiftAborted, advance, run_shift
 
 
 class CalmClient:
@@ -2502,7 +2502,7 @@ def test_truth_is_stored_for_scoring_but_not_in_the_state(tmp_path):
 ```python
 import json
 
-from jev_planner.cli import main
+from jev_costmap.cli import main
 
 
 def test_dry_run_prints_the_state_and_questions_and_makes_no_call(capsys, monkeypatch):
@@ -2531,7 +2531,7 @@ def test_unknown_command_is_an_error():
 uv run pytest tests/test_shift.py tests/test_cli.py -v
 ```
 
-Expected: `ModuleNotFoundError: No module named 'jev_planner.shift'`.
+Expected: `ModuleNotFoundError: No module named 'jev_costmap.shift'`.
 
 - [ ] **Step 3: Write `shift.py`**
 
@@ -2748,7 +2748,7 @@ def run_shift(
 Later tasks add `replay`, `explain` and `disagree` subparsers to `_parser()`.
 
 ```python
-"""The jev-planner command line."""
+"""The jev-costmap command line."""
 
 from __future__ import annotations
 
@@ -2768,7 +2768,7 @@ from .state import build_state
 
 
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="jev-planner")
+    parser = argparse.ArgumentParser(prog="jev-costmap")
     sub = parser.add_subparsers(dest="command", required=True)
 
     run = sub.add_parser("run", help="plan a whole shift")
@@ -2839,7 +2839,7 @@ Expected: 12 passed.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add src/jev_planner/shift.py src/jev_planner/cli.py tests/test_shift.py tests/test_cli.py
+git add src/jev_costmap/shift.py src/jev_costmap/cli.py tests/test_shift.py tests/test_cli.py
 git commit -m "$(printf 'feat: shift loop and the run command\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -2848,8 +2848,8 @@ git commit -m "$(printf 'feat: shift loop and the run command\n\nCo-Authored-By:
 ### Task 12: Frames, GIF and `replay`
 
 **Files:**
-- Create: `src/jev_planner/render.py`
-- Modify: `src/jev_planner/events.py` (add `path` to `Scenario`), `src/jev_planner/shift.py` (record `scenario_path` in the manifest), `src/jev_planner/cli.py` (add the `replay` subcommand), `tests/test_events.py` (one new assertion), `tests/test_shift.py` (one new assertion)
+- Create: `src/jev_costmap/render.py`
+- Modify: `src/jev_costmap/events.py` (add `path` to `Scenario`), `src/jev_costmap/shift.py` (record `scenario_path` in the manifest), `src/jev_costmap/cli.py` (add the `replay` subcommand), `tests/test_events.py` (one new assertion), `tests/test_shift.py` (one new assertion)
 - Test: `tests/test_render.py`
 
 **Interfaces:**
@@ -2907,13 +2907,13 @@ def test_the_manifest_records_the_scenario_path(tmp_path):
 ```python
 import datetime as dt
 
-from jev_planner.baseline import DEFAULT_RULES
-from jev_planner.costs import DEFAULT_WEIGHTS
-from jev_planner.events import load_scenario
-from jev_planner.judge import Judge
-from jev_planner.render import layers_from_run, render_run, render_tick
-from jev_planner.runs import RunDir
-from jev_planner.shift import run_shift
+from jev_costmap.baseline import DEFAULT_RULES
+from jev_costmap.costs import DEFAULT_WEIGHTS
+from jev_costmap.events import load_scenario
+from jev_costmap.judge import Judge
+from jev_costmap.render import layers_from_run, render_run, render_tick
+from jev_costmap.runs import RunDir
+from jev_costmap.shift import run_shift
 from tests.test_shift import CalmClient
 
 
@@ -2949,7 +2949,7 @@ def test_render_run_produces_a_gif_and_every_frame(tmp_path):
 
 
 def test_replay_needs_no_api_key(tmp_path, monkeypatch, capsys):
-    from jev_planner.cli import main
+    from jev_costmap.cli import main
 
     s, run = recorded(tmp_path)
     monkeypatch.delenv("TYPESAFE_API_KEY", raising=False)
@@ -2963,11 +2963,11 @@ def test_replay_needs_no_api_key(tmp_path, monkeypatch, capsys):
 uv run pytest tests/test_render.py -v
 ```
 
-Expected: `ModuleNotFoundError: No module named 'jev_planner.render'`.
+Expected: `ModuleNotFoundError: No module named 'jev_costmap.render'`.
 
 - [ ] **Step 4: Write the implementation**
 
-`src/jev_planner/render.py`:
+`src/jev_costmap/render.py`:
 
 ```python
 """Frames and a GIF, rebuilt from stored artifacts. No network, no API key."""
@@ -3116,7 +3116,7 @@ Expected: every test passes, including the two new assertions in `test_events.py
 - [ ] **Step 7: Commit**
 
 ```bash
-git add src/jev_planner tests
+git add src/jev_costmap tests
 git commit -m "$(printf 'feat: side-by-side frames, GIF, and offline replay\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -3125,8 +3125,8 @@ git commit -m "$(printf 'feat: side-by-side frames, GIF, and offline replay\n\nC
 ### Task 13: Scoring, the report, `explain` and `disagree`
 
 **Files:**
-- Create: `src/jev_planner/report.py`
-- Modify: `src/jev_planner/cli.py` (add `explain` and `disagree`; call `write_report` at the end of `run` and `replay`)
+- Create: `src/jev_costmap/report.py`
+- Modify: `src/jev_costmap/cli.py` (add `explain` and `disagree`; call `write_report` at the end of `run` and `replay`)
 - Test: `tests/test_report.py`
 
 **Interfaces:**
@@ -3149,15 +3149,15 @@ Counting rules, fixed so the numbers mean one thing:
 ```python
 import datetime as dt
 
-from jev_planner.baseline import DEFAULT_RULES
-from jev_planner.costs import DEFAULT_WEIGHTS, ZoneCost
-from jev_planner.events import load_scenario
-from jev_planner.judge import Judge
-from jev_planner.planner import Plan
-from jev_planner.report import disagree_text, explain_text, score_run, score_tick, write_report
-from jev_planner.runs import RunDir
-from jev_planner.shift import run_shift
-from jev_planner.world import load_world_file
+from jev_costmap.baseline import DEFAULT_RULES
+from jev_costmap.costs import DEFAULT_WEIGHTS, ZoneCost
+from jev_costmap.events import load_scenario
+from jev_costmap.judge import Judge
+from jev_costmap.planner import Plan
+from jev_costmap.report import disagree_text, explain_text, score_run, score_tick, write_report
+from jev_costmap.runs import RunDir
+from jev_costmap.shift import run_shift
+from jev_costmap.world import load_world_file
 from tests.test_shift import CalmClient
 
 
@@ -3259,7 +3259,7 @@ def test_disagree_reports_the_spill_the_baseline_will_not_release(tmp_path):
 
 
 def test_a_difference_of_degree_is_not_scored_as_a_win(tmp_path):
-    from jev_planner.report import _verdict
+    from jev_costmap.report import _verdict
 
     assert _verdict(False, False, "clear") == "degree only"
     assert _verdict(False, False, "avoid") == "degree only"
@@ -3275,11 +3275,11 @@ def test_a_difference_of_degree_is_not_scored_as_a_win(tmp_path):
 uv run pytest tests/test_report.py -v
 ```
 
-Expected: `ModuleNotFoundError: No module named 'jev_planner.report'`.
+Expected: `ModuleNotFoundError: No module named 'jev_costmap.report'`.
 
 - [ ] **Step 3: Write the implementation**
 
-`src/jev_planner/report.py`:
+`src/jev_costmap/report.py`:
 
 ```python
 """Scoring against the hidden labels, and the three things you read afterwards."""
@@ -3557,7 +3557,7 @@ Expected: all green (13 tests in `test_report.py`).
 - [ ] **Step 6: Commit**
 
 ```bash
-git add src/jev_planner tests
+git add src/jev_costmap tests
 git commit -m "$(printf 'feat: ground-truth scoring, report, explain and disagree\n\nCo-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>')"
 ```
 
@@ -3818,9 +3818,9 @@ ticks:
 ```python
 import pytest
 
-from jev_planner.baseline import DEFAULT_RULES, baseline_costs
-from jev_planner.events import initial_agvs, load_scenario, state_at
-from jev_planner.planner import plan_single
+from jev_costmap.baseline import DEFAULT_RULES, baseline_costs
+from jev_costmap.events import initial_agvs, load_scenario, state_at
+from jev_costmap.planner import plan_single
 from tests.helpers import uniform_layer
 
 SCENARIO = "config/scenarios/night-shift.yaml"
@@ -3899,7 +3899,7 @@ Expected: 8 passed. If `test_every_station_is_reachable_from_every_other` fails,
 - [ ] **Step 5: Check the state fits Jev's budget**
 
 ```bash
-uv run jev-planner run --scenario config/scenarios/night-shift.yaml --dry-run | wc -c
+uv run jev-costmap run --scenario config/scenarios/night-shift.yaml --dry-run | wc -c
 ```
 
 Expected: well under 128,000 characters. Jev 1.13 allows 64k tokens for state plus all questions; 14 zones x 4 questions plus a small state is roughly 6k tokens, so there is ample headroom. If this number is anywhere near 128,000, stop and shorten the level texts before running for real.
@@ -3932,10 +3932,10 @@ import os
 
 import pytest
 
-from jev_planner.events import initial_agvs, load_scenario, state_at
-from jev_planner.judge import Judge
-from jev_planner.questions import build_questions
-from jev_planner.state import build_state
+from jev_costmap.events import initial_agvs, load_scenario, state_at
+from jev_costmap.judge import Judge
+from jev_costmap.questions import build_questions
+from jev_costmap.state import build_state
 
 pytestmark = pytest.mark.skipif(
     not os.environ.get("TYPESAFE_API_KEY"), reason="no TYPESAFE_API_KEY"
@@ -3973,14 +3973,14 @@ Expected: 1 passed. Without a key: 1 skipped.
 - [ ] **Step 3: Record the shipped run**
 
 ```bash
-uv run jev-planner run --scenario config/scenarios/night-shift.yaml --out runs
+uv run jev-costmap run --scenario config/scenarios/night-shift.yaml --out runs
 ```
 
 Rename the produced directory to `runs/example-night-shift` so the README can point at a stable path, then re-render it in place:
 
 ```bash
 mv runs/*-night-shift runs/example-night-shift
-uv run jev-planner replay runs/example-night-shift
+uv run jev-costmap replay runs/example-night-shift
 ```
 
 Read `runs/example-night-shift/report.md` before going further.
@@ -3988,9 +3988,9 @@ Read `runs/example-night-shift/report.md` before going further.
 - [ ] **Step 4: Check the demo actually demonstrates something**
 
 ```bash
-uv run jev-planner disagree runs/example-night-shift
-uv run jev-planner explain runs/example-night-shift --zone aisle-3 --tick 3
-uv run jev-planner explain runs/example-night-shift --zone aisle-2 --tick 4
+uv run jev-costmap disagree runs/example-night-shift
+uv run jev-costmap explain runs/example-night-shift --zone aisle-3 --tick 3
+uv run jev-costmap explain runs/example-night-shift --zone aisle-2 --tick 4
 ```
 
 What to look for, and what to do if it is not there:
@@ -4007,13 +4007,13 @@ If the run contradicts the plan's expectations, say so in the handoff rather tha
 `README.md`, following jev-cleaner's shape: what it does, the table that makes the case, install, use, how it works, what the baseline gets right, cost. Fill the numbers from the run you just recorded — **do not copy the numbers below, they are the shape, not the answer**:
 
 ````markdown
-# jev-path-planning
+# jev-semantic-cost-map
 
 Path planning where the geometry is code and the judgment is [Jev](https://docs.typesafe.ai).
 
 A warehouse floor plan gives you occupancy. It does not tell you that the spill
 in aisle 3 was mopped twenty minutes ago, or that the stock counter in aisle 2 is
-stepping in and out of the lane. jev-path-planning hands each named zone to Jev
+stepping in and out of the lane. jev-semantic-cost-map hands each named zone to Jev
 as four typed questions, turns the answers into a cost layer, and routes four
 AGVs over it with a space-time A\*.
 
@@ -4044,11 +4044,11 @@ export TYPESAFE_API_KEY=...   # from https://console.typesafe.ai/
 ## Use
 
 ```bash
-jev-planner run --scenario config/scenarios/night-shift.yaml   # plan the shift
-jev-planner run --scenario ... --dry-run     # print the state and questions, no call
-jev-planner replay runs/example-night-shift  # re-render offline, no key needed
-jev-planner explain runs/example-night-shift --zone aisle-3 --tick 3
-jev-planner disagree runs/example-night-shift
+jev-costmap run --scenario config/scenarios/night-shift.yaml   # plan the shift
+jev-costmap run --scenario ... --dry-run     # print the state and questions, no call
+jev-costmap replay runs/example-night-shift  # re-render offline, no key needed
+jev-costmap explain runs/example-night-shift --zone aisle-3 --tick 3
+jev-costmap disagree runs/example-night-shift
 ```
 
 A twelve-tick shift is about N input tokens, roughly $N at Jev's current price.
@@ -4072,7 +4072,7 @@ planning can starve a low-priority AGV; when it does, the report says so.
 uv run pytest -v                                    # every test, no network
 uv run pytest -v -m live                            # the one live test
 git status --short                                  # nothing unexpected untracked
-uv run jev-planner replay runs/example-night-shift  # works with the key unset
+uv run jev-costmap replay runs/example-night-shift  # works with the key unset
 ```
 
 Confirm `runs/example-night-shift` is tracked despite `.gitignore` — the negation
@@ -4093,7 +4093,7 @@ git commit -m "$(printf 'feat: live smoke test, shipped example run, and README\
 
 - `uv run pytest` is green with no network access.
 - `uv run pytest -m live` passes with a key and skips without one.
-- `jev-planner replay runs/example-night-shift` works with `TYPESAFE_API_KEY` unset.
+- `jev-costmap replay runs/example-night-shift` works with `TYPESAFE_API_KEY` unset.
 - `runs/example-night-shift/report.md` scores both models against the hidden labels.
-- `jev-planner explain ... --zone aisle-3 --tick 3` shows every level probability and confidence behind that zone's cost.
+- `jev-costmap explain ... --zone aisle-3 --tick 3` shows every level probability and confidence behind that zone's cost.
 - The README's table is filled from the recorded run, including any row the baseline won.

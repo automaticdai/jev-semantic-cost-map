@@ -2,10 +2,10 @@ import os
 
 import pytest
 
-from jev_planner.events import initial_agvs, load_scenario, state_at
-from jev_planner.judge import Judge
-from jev_planner.questions import build_questions
-from jev_planner.state import build_state
+from jev_costmap.events import initial_agvs, load_scenario, state_at
+from jev_costmap.judge import Judge
+from jev_costmap.questions import build_questions
+from jev_costmap.state import build_state
 
 pytestmark = pytest.mark.skipif(
     not os.environ.get("TYPESAFE_API_KEY"), reason="no TYPESAFE_API_KEY"

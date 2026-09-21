@@ -1,6 +1,6 @@
 import pytest
 
-from jev_planner.planner import HORIZON, Plan, Reservations, plan_single
+from jev_costmap.planner import HORIZON, Plan, Reservations, plan_single
 from tests.helpers import grid_world, uniform_layer
 
 

@@ -1,10 +1,10 @@
-# jev-path-planning
+# jev-semantic-cost-map
 
 Path planning where the geometry is code and the judgment is [Jev](https://docs.typesafe.ai).
 
 A warehouse floor plan gives you occupancy. It does not tell you that the spill
 in aisle 3 was mopped twenty minutes ago, or that the stock counter in aisle 2 is
-stepping in and out of the lane. jev-path-planning hands each named zone to Jev
+stepping in and out of the lane. jev-semantic-cost-map hands each named zone to Jev
 as four typed questions, turns the answers into a cost layer, and routes four
 AGVs over it with a space-time A\*.
 
@@ -56,12 +56,12 @@ export TYPESAFE_API_KEY=...   # from https://console.typesafe.ai/
 ## Use
 
 ```bash
-jev-planner run --scenario config/scenarios/night-shift.yaml   # plan the shift
-jev-planner run --scenario ... --dry-run     # print the state and questions, no call
-jev-planner replay runs/example-night-shift  # re-render offline, no key needed
-jev-planner explain runs/example-night-shift --zone aisle-3 --tick 3
-jev-planner explain runs/example-night-shift --zone aisle-2 --tick 4
-jev-planner disagree runs/example-night-shift
+jev-costmap run --scenario config/scenarios/night-shift.yaml   # plan the shift
+jev-costmap run --scenario ... --dry-run     # print the state and questions, no call
+jev-costmap replay runs/example-night-shift  # re-render offline, no key needed
+jev-costmap explain runs/example-night-shift --zone aisle-3 --tick 3
+jev-costmap explain runs/example-night-shift --zone aisle-2 --tick 4
+jev-costmap disagree runs/example-night-shift
 ```
 
 A twelve-tick shift is 94,431 input tokens (about 7,870 per tick, one request

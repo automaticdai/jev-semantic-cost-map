@@ -246,7 +246,7 @@ wheels = [
 ]
 
 [[package]]
-name = "jev-path-planning"
+name = "jev-semantic-cost-map"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

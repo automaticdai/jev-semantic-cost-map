@@ -2,13 +2,13 @@ import datetime as dt
 
 import pytest
 
-from jev_planner.baseline import DEFAULT_RULES
-from jev_planner.costs import DEFAULT_WEIGHTS
-from jev_planner.events import load_scenario
-from jev_planner.judge import Judge
-from jev_planner.render import layers_from_run, paths_from_run, render_run, render_tick
-from jev_planner.runs import RunDir
-from jev_planner.shift import run_shift
+from jev_costmap.baseline import DEFAULT_RULES
+from jev_costmap.costs import DEFAULT_WEIGHTS
+from jev_costmap.events import load_scenario
+from jev_costmap.judge import Judge
+from jev_costmap.render import layers_from_run, paths_from_run, render_run, render_tick
+from jev_costmap.runs import RunDir
+from jev_costmap.shift import run_shift
 from tests.test_shift import CalmClient
 
 
@@ -45,7 +45,7 @@ def test_render_tick_pairs_each_panel_with_its_own_layer_and_paths(tmp_path, mon
     def recorder(*args, **kwargs):
         calls.append(args)
 
-    monkeypatch.setattr("jev_planner.render._panel", recorder)
+    monkeypatch.setattr("jev_costmap.render._panel", recorder)
     # With _panel stubbed out, axes[0] never gets a labeled artist, so
     # render_tick's own axes[0].legend() call raises its usual, harmless
     # UserWarning; expect it explicitly rather than let it leak into the
@@ -77,7 +77,7 @@ def test_render_run_produces_a_gif_and_every_frame(tmp_path):
 
 
 def test_replay_needs_no_api_key(tmp_path, monkeypatch, capsys):
-    from jev_planner.cli import main
+    from jev_costmap.cli import main
 
     s, run = recorded(tmp_path)
     monkeypatch.delenv("TYPESAFE_API_KEY", raising=False)

@@ -1,6 +1,6 @@
 import json
 
-from jev_planner.cli import main
+from jev_costmap.cli import main
 
 
 def test_dry_run_prints_the_state_and_questions_and_makes_no_call(capsys, monkeypatch):
