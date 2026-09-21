@@ -36,13 +36,13 @@ class RunDir:
     def write_tick(self, kind: str, tick: int, data) -> None:
         path = self._path(kind, tick)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(data, indent=1, default=str))
+        path.write_text(json.dumps(data, indent=1))
 
     def read_tick(self, kind: str, tick: int):
         return json.loads(self._path(kind, tick).read_text())
 
     def write_manifest(self, data: dict) -> None:
-        (self.root / "manifest.json").write_text(json.dumps(data, indent=1, default=str))
+        (self.root / "manifest.json").write_text(json.dumps(data, indent=1))
 
     def read_manifest(self) -> dict:
         return json.loads((self.root / "manifest.json").read_text())
