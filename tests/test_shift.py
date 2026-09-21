@@ -6,11 +6,11 @@ from typesafe_sdk import SystemOneResponse, TypeSafeAPIError
 
 from jev_planner.baseline import DEFAULT_RULES
 from jev_planner.costs import DEFAULT_WEIGHTS
-from jev_planner.events import initial_agvs, load_scenario
+from jev_planner.events import AgvState, initial_agvs, load_scenario
 from jev_planner.judge import Judge
 from jev_planner.planner import Plan
 from jev_planner.runs import RunDir
-from jev_planner.shift import ShiftAborted, advance, run_shift
+from jev_planner.shift import ShiftAborted, advance, run_shift, run_tick
 
 
 class CalmClient:
@@ -140,3 +140,24 @@ def test_truth_is_stored_for_scoring_but_not_in_the_state(tmp_path):
               DEFAULT_WEIGHTS, DEFAULT_RULES)
     assert run.read_tick("truth", 1)["aisle-1"] == "blocked"
     assert "blocked" not in str(run.read_tick("states", 1))
+
+
+def test_both_planners_plan_from_identical_agv_positions():
+    """Both cost models must be scored from the same situation; if one planned
+    from positions the other had already advanced past, every comparison in
+    the report would be meaningless."""
+    s = scenario()
+    agvs = {
+        "agv-1": AgvState(
+            id="agv-1", cell=(5, 1), goal_station="bay",
+            committed_route=(), route_tick=-1,
+        )
+    }
+    judge = Judge(client=CalmClient(), cache_path=None)
+    result = run_tick(s, judge, agvs, tick=0, weights=DEFAULT_WEIGHTS, rules=DEFAULT_RULES)
+
+    for agv_id, agv in agvs.items():
+        jev_start = result.jev_plans[agv_id].path[0]
+        baseline_start = result.baseline_plans[agv_id].path[0]
+        assert jev_start == agv.cell
+        assert baseline_start == agv.cell
