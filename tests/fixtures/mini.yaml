@@ -1,0 +1,28 @@
+width: 10
+height: 8
+cell_size_m: 0.5
+walls:
+  - {x: 0, y: 3, w: 10, h: 1}
+  - {x: 4, y: 3, w: 1, h: 1, clear: true}
+zones:
+  - id: aisle-1
+    name: Aisle 1
+    kind: travel lane
+    description: Travel lane between pallet racking, rated for AGV traffic.
+    x: 0
+    y: 0
+    w: 10
+    h: 3
+  - id: aisle-2
+    name: Aisle 2
+    kind: travel lane
+    description: Travel lane between pallet racking, rated for AGV traffic.
+    x: 0
+    y: 4
+    w: 10
+    h: 4
+stations:
+  - {id: dock, cell: [0, 0]}
+  - {id: bay, cell: [9, 7]}
+agvs:
+  - {id: agv-1, priority: 1, start: dock, tasks: [bay]}

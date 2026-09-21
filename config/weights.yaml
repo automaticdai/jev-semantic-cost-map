@@ -1,0 +1,5 @@
+# Starting values. Tune against the scenarios; the demo does not depend on
+# these particular numbers.
+people: 6.0
+damage: 3.0
+delay: 1.5

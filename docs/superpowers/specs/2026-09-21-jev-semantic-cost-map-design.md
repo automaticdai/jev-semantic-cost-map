@@ -1,4 +1,4 @@
-# jev-motion-planner — design
+# jev-semantic-cost-map — design
 
 Date: 2026-09-21
 Status: approved, ready for implementation planning
@@ -6,7 +6,7 @@ Status: approved, ready for implementation planning
 ## What this is
 
 A demo that puts [Jev](https://docs.typesafe.ai) in charge of the *semantic* layer of
-motion planning for warehouse AGVs, and leaves every geometric decision to ordinary
+path planning for warehouse AGVs, and leaves every geometric decision to ordinary
 code.
 
 A warehouse floor is described in YAML: static geometry plus named zones with
@@ -55,8 +55,8 @@ them):
 
 ## Package and dependencies
 
-Repository `jev-motion-planner`, Python package `jev_planner` under `src/`, console
-script `jev-planner`. Python 3.12, managed with `uv`.
+Repository `jev-semantic-cost-map`, Python package `jev_costmap` under `src/`, console
+script `jev-costmap`. Python 3.12, managed with `uv`.
 
 Runtime dependencies: `typesafe-sdk`, `numpy`, `matplotlib`, `pyyaml`, `pillow`
 (matplotlib's `PillowWriter` writes the GIF). Development: `pytest`.
@@ -84,7 +84,7 @@ so a recorded run re-renders offline with no API key.
 
 ### Modules
 
-`src/jev_planner/`
+`src/jev_costmap/`
 
 | Module | Responsibility | Depends on |
 | --- | --- | --- |
@@ -305,11 +305,11 @@ which is an anecdote.
 ## CLI
 
 ```
-jev-planner run --scenario config/scenarios/night-shift.yaml [--out runs/<id>]
-jev-planner run --scenario ... --dry-run     # print tick 0 state + questions, no call
-jev-planner replay runs/<id>                  # re-render from stored answers, offline
-jev-planner explain runs/<id> --zone aisle-3 [--tick 4]
-jev-planner disagree runs/<id>
+jev-costmap run --scenario config/scenarios/night-shift.yaml [--out runs/<id>]
+jev-costmap run --scenario ... --dry-run     # print tick 0 state + questions, no call
+jev-costmap replay runs/<id>                  # re-render from stored answers, offline
+jev-costmap explain runs/<id> --zone aisle-3 [--tick 4]
+jev-costmap disagree runs/<id>
 ```
 
 `replay`, `explain`, `disagree` and `--dry-run` require no API key.
@@ -323,7 +323,13 @@ runs/2026-09-21T14-02-night-shift/
   states/t00.json    the exact state sent
   questions/t00.json the exact questions sent
   answers/t00.json   the raw response, every probability and confidence
-  costs/t00.npz      jev and baseline cost layers
+  costs/t00.json     jev and baseline per-zone multipliers and blocked flags
+                     (not the rasterized grid: `rasterize()` rebuilds that
+                     deterministically from these, so json is smaller,
+                     diffable, and provably consistent with what was
+                     actually planned over -- an implementation improvement
+                     over this doc's original `.npz`, kept as the record of
+                     what shipped)
   plans/t00.json     per-AGV paths and deferrals, both models
   truth/t00.json     the hidden labels, copied in for scoring
   frames/t00.png

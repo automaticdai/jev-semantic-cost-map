@@ -1,0 +1,140 @@
+width: 80
+height: 50
+cell_size_m: 0.5
+
+walls:
+  - {x: 0,  y: 0,  w: 80, h: 4}    # north wall
+  - {x: 0,  y: 46, w: 80, h: 4}    # south wall
+  - {x: 8,  y: 8,  w: 8,  h: 34}   # racking between aisles 1 and 2
+  - {x: 20, y: 8,  w: 8,  h: 34}   # racking between aisles 2 and 3
+  - {x: 32, y: 8,  w: 8,  h: 34}   # racking between aisles 3 and 4
+  - {x: 44, y: 8,  w: 8,  h: 34}   # racking between aisles 4 and 5
+  - {x: 56, y: 8,  w: 8,  h: 34}   # racking between aisles 5 and 6
+  - {x: 0,  y: 22, w: 4,  h: 6}    # wall between the two pick bays
+  - {x: 68, y: 22, w: 12, h: 6}    # wall between staging and charging
+
+zones:
+  - id: junction-1
+    name: North-west cross corridor
+    kind: cross corridor
+    description: North cross corridor serving aisles 1 to 3, shared with foot traffic from the office door.
+    x: 0
+    y: 4
+    w: 40
+    h: 4
+  - id: junction-2
+    name: North-east cross corridor
+    kind: cross corridor
+    description: North cross corridor serving aisles 4 to 6 and the goods-in door.
+    x: 40
+    y: 4
+    w: 40
+    h: 4
+  - id: junction-3
+    name: South-west cross corridor
+    kind: cross corridor
+    description: South cross corridor serving aisles 1 to 3 and the pick bays.
+    x: 0
+    y: 42
+    w: 40
+    h: 4
+  - id: junction-4
+    name: South-east cross corridor
+    kind: cross corridor
+    description: South cross corridor serving aisles 4 to 6, staging and the charging bank.
+    x: 40
+    y: 42
+    w: 40
+    h: 4
+  - id: aisle-1
+    name: Aisle 1
+    kind: travel lane
+    description: Travel lane between pallet racking, rated for AGV traffic.
+    x: 4
+    y: 8
+    w: 4
+    h: 34
+  - id: aisle-2
+    name: Aisle 2
+    kind: travel lane
+    description: Travel lane between pallet racking, rated for AGV traffic. Low shelves on the west side are picked by hand.
+    x: 16
+    y: 8
+    w: 4
+    h: 34
+  - id: aisle-3
+    name: Aisle 3
+    kind: travel lane
+    description: Travel lane between pallet racking, rated for AGV traffic.
+    x: 28
+    y: 8
+    w: 4
+    h: 34
+  - id: aisle-4
+    name: Aisle 4
+    kind: travel lane
+    description: Travel lane between pallet racking, rated for AGV traffic.
+    x: 40
+    y: 8
+    w: 4
+    h: 34
+  - id: aisle-5
+    name: Aisle 5
+    kind: travel lane
+    description: Travel lane between pallet racking, rated for AGV traffic.
+    x: 52
+    y: 8
+    w: 4
+    h: 34
+  - id: aisle-6
+    name: Aisle 6
+    kind: travel lane
+    description: Travel lane between pallet racking, rated for AGV traffic. The widest lane on the floor.
+    x: 64
+    y: 8
+    w: 4
+    h: 34
+  - id: bay-A
+    name: Pick bay A
+    kind: pick bay
+    description: Pick bay on the west wall with a marked AGV drop point and a walkway behind the racks.
+    x: 0
+    y: 8
+    w: 4
+    h: 14
+  - id: bay-B
+    name: Pick bay B
+    kind: pick bay
+    description: Pick bay on the west wall with a marked AGV drop point and a walkway behind the racks.
+    x: 0
+    y: 28
+    w: 4
+    h: 14
+  - id: staging-7
+    name: Staging 7
+    kind: staging floor
+    description: Floor staging for goods waiting to be put away. Pallets stand directly on the deck.
+    x: 68
+    y: 8
+    w: 12
+    h: 14
+  - id: charging
+    name: Charging bank
+    kind: charging
+    description: AGV charging bank. No stock is kept here and no one works in it during a shift.
+    x: 68
+    y: 28
+    w: 12
+    h: 14
+
+stations:
+  - {id: dock-A, cell: [2, 12]}
+  - {id: dock-B, cell: [2, 34]}
+  - {id: stage,  cell: [73, 14]}
+  - {id: charge, cell: [73, 34]}
+
+agvs:
+  - {id: agv-1, priority: 1, start: dock-A, tasks: [stage, dock-A]}
+  - {id: agv-2, priority: 2, start: stage,  tasks: [dock-B, stage]}
+  - {id: agv-3, priority: 3, start: dock-B, tasks: [charge, dock-B]}
+  - {id: agv-4, priority: 4, start: charge, tasks: [dock-A, charge]}

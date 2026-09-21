@@ -1,0 +1,12 @@
+name: mini
+world: mini.yaml
+cells_per_tick: 2
+ticks:
+  - clock: "13:00"
+  - clock: "13:10"
+    events:
+      - {zone: aisle-1, note: "13:08 Pallet wrap spill reported at the north end."}
+    truth: {aisle-1: blocked}
+  - clock: "13:20"
+    events:
+      - {zone: aisle-1, note: "13:18 Spill mopped and signed off by the shift lead."}

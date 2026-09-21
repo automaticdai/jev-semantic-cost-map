@@ -1,0 +1,7 @@
+# A keyword cost model of the kind that ships in real dispatch systems. It is
+# meant to be a fair opponent: it gets the obvious cases right.
+- {pattern: 'spill|wet floor|leak|leaking', blocked: true}
+- {pattern: 'closed|do not enter|no entry|out of service', blocked: true}
+- {pattern: 'picker|pickers|staff|operator|person|people|engineer', multiplier: 3.0}
+- {pattern: 'fragile|glass|glassware|breakable', multiplier: 2.0}
+- {pattern: 'obstruction|blocked aisle|pallet left', multiplier: 2.0}

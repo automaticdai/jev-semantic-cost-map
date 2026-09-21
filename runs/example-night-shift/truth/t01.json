@@ -1,0 +1,16 @@
+{
+ "junction-1": "clear",
+ "junction-2": "clear",
+ "junction-3": "clear",
+ "junction-4": "clear",
+ "aisle-1": "clear",
+ "aisle-2": "clear",
+ "aisle-3": "blocked",
+ "aisle-4": "clear",
+ "aisle-5": "clear",
+ "aisle-6": "clear",
+ "bay-A": "clear",
+ "bay-B": "clear",
+ "staging-7": "clear",
+ "charging": "clear"
+}
