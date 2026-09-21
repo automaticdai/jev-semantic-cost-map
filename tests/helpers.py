@@ -37,6 +37,10 @@ def grid_world(width: int, height: int) -> World:
 
 
 def uniform_layer(world: World, multipliers=None, blocked=()) -> CostLayer:
+    # Multipliers are expected to be >= 1.0, as production `fuse()` guarantees
+    # (BLOCK_THRESHOLD aside). A sub-1.0 multiplier here would make a move
+    # cost less than the Manhattan heuristic's per-step unit, which would
+    # break A*'s admissibility in plan_single.
     multipliers = multipliers or {}
     costs = {
         zone_id: ZoneCost(

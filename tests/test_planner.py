@@ -95,3 +95,19 @@ def test_two_agvs_can_pass_in_a_two_wide_lane():
 def test_the_horizon_is_respected():
     w = grid_world(5, 1)
     assert plan_single(w, uniform_layer(w), "agv-1", (0, 0), (4, 0), horizon=2) is None
+
+
+def test_a_live_search_detects_an_oncoming_swap():
+    """agv-2's direct first step (1,0) -> (2,0) at t=1 is a head-on swap
+    against the reserved westbound move (2,0) -> (1,0) arriving at t=1.
+    Crucially (2,0) is not vertex-reserved at t=1, so only the edge rule can
+    reject this move. A reversed comparison inside Reservations.edge, or a
+    call site that passes (nxt, cell, t + 1) instead of (cell, nxt, t + 1),
+    would fail to catch it and let the plan pass straight through the
+    oncoming AGV via the direct, cheaper route."""
+    w = grid_world(4, 2)
+    r = Reservations()
+    r.add(((2, 0), (1, 0), (0, 0)))
+    plan = plan_single(w, uniform_layer(w), "agv-2", (1, 0), (3, 0), reservations=r)
+    assert plan is not None
+    assert plan.path[1] != (2, 0)
