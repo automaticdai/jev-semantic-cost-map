@@ -32,10 +32,21 @@ def _parser() -> argparse.ArgumentParser:
 
     replay = sub.add_parser("replay", help="re-render a stored run; no network")
     replay.add_argument("run")
+
+    explain = sub.add_parser("explain", help="every probability behind one zone's cost")
+    explain.add_argument("run")
+    explain.add_argument("--zone", required=True)
+    explain.add_argument("--tick", type=int, default=0)
+
+    disagree = sub.add_parser("disagree", help="where Jev and the rule baseline diverge")
+    disagree.add_argument("run")
     return parser
 
 
 def _cmd_run(args) -> int:
+    from .render import render_run
+    from .report import write_report
+
     scenario = load_scenario(args.scenario)
     if args.dry_run:
         ws = state_at(scenario, 0, initial_agvs(scenario.world))
@@ -65,16 +76,41 @@ def _cmd_run(args) -> int:
     except ShiftAborted as aborted:
         print(f"{aborted}. Artifacts written so far are in {run.root}.", file=sys.stderr)
         return 1
+    render_run(scenario, run)
+    write_report(scenario, run)
     print(f"{run.root}  {manifest['input_tokens']} tokens  ~${manifest['estimated_usd']}")
     return 0
 
 
 def _cmd_replay(args) -> int:
     from .render import render_run
+    from .report import write_report
 
     run = RunDir.open(args.run)
     scenario = load_scenario(run.read_manifest()["scenario_path"])
     print(render_run(scenario, run))
+    write_report(scenario, run)
+    return 0
+
+
+def _open(path):
+    run = RunDir.open(path)
+    return run, load_scenario(run.read_manifest()["scenario_path"])
+
+
+def _cmd_explain(args) -> int:
+    from .report import explain_text
+
+    run, scenario = _open(args.run)
+    print(explain_text(scenario, run, args.zone, args.tick))
+    return 0
+
+
+def _cmd_disagree(args) -> int:
+    from .report import disagree_text
+
+    run, scenario = _open(args.run)
+    print(disagree_text(scenario, run))
     return 0
 
 
@@ -83,7 +119,12 @@ def main(argv: list[str] | None = None) -> int:
         args = _parser().parse_args(argv)
     except SystemExit as exit_:
         return int(exit_.code or 0)
-    return {"run": _cmd_run, "replay": _cmd_replay}[args.command](args)
+    return {
+        "run": _cmd_run,
+        "replay": _cmd_replay,
+        "explain": _cmd_explain,
+        "disagree": _cmd_disagree,
+    }[args.command](args)
 
 
 if __name__ == "__main__":
