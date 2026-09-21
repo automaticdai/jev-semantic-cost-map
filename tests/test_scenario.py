@@ -1,6 +1,7 @@
 import pytest
 
-from jev_planner.baseline import DEFAULT_RULES, baseline_costs
+from jev_planner.baseline import DEFAULT_RULES, baseline_costs, load_rules
+from jev_planner.costs import DEFAULT_WEIGHTS, load_weights
 from jev_planner.events import initial_agvs, load_scenario, state_at
 from jev_planner.planner import plan_single
 from tests.helpers import uniform_layer
@@ -88,6 +89,24 @@ def test_the_baseline_does_catch_the_uncleaned_leak():
     ws = state_at(s, 7, initial_agvs(s.world))
     assert ws.truth["aisle-5"] == "blocked"
     assert baseline_costs(s.world, ws, DEFAULT_RULES)["aisle-5"].blocked is True
+
+
+def test_the_shipped_config_is_what_the_fairness_tests_above_actually_tested():
+    """Every baseline-fairness test above passes DEFAULT_RULES / DEFAULT_WEIGHTS
+    directly, not config/rules.yaml or config/weights.yaml -- but the CLI's
+    `run` command reads those files (`load_rules(args.rules)`,
+    `load_weights(args.weights)`). The two are byte-identical today, so the
+    fairness tests happen to describe the shipped comparison, but nothing
+    enforces that. Someone could add `stalled` to config/rules.yaml -- the
+    single most defensible edit to that file, since a standing-rule judgment
+    call for a stalled AGV is exactly what the baseline currently misses --
+    and every fairness test above would keep passing while the run the CLI
+    actually produces silently stopped matching what they tested. This
+    assertion is what makes those tests meaningful statements about the
+    shipped config rather than about a config that merely used to match it.
+    """
+    assert tuple(load_rules("config/rules.yaml")) == DEFAULT_RULES
+    assert load_weights("config/weights.yaml") == DEFAULT_WEIGHTS
 
 
 def test_a_blocked_junction_never_disconnects_the_floor():
