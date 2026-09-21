@@ -1,4 +1,5 @@
 import datetime as dt
+import re
 
 from jev_planner.baseline import DEFAULT_RULES
 from jev_planner.costs import DEFAULT_WEIGHTS, ZoneCost
@@ -75,10 +76,36 @@ def test_score_run_covers_both_sources_and_every_tick(tmp_path):
 
 
 def test_the_report_names_both_models_and_the_totals(tmp_path):
+    """The totals table is the one thing in the report that must not lie:
+    parse the actual numbers out of the rendered markdown and check them
+    against totals summed independently straight from score_run's TickScores
+    (the same formula the report uses, computed without going through the
+    report's own _totals helper) rather than merely checking that the static
+    labels are present."""
     s, run = recorded(tmp_path)
+    scores = score_run(s, run)
+    jev_blocked = sum(t.blocked_violations for t in scores["jev"])
+    base_blocked = sum(t.blocked_violations for t in scores["baseline"])
+    jev_cells = sum(t.path_cells for t in scores["jev"])
+    base_cells = sum(t.path_cells for t in scores["baseline"])
+
     text = write_report(s, run).read_text()
     assert "jev" in text and "baseline" in text
-    assert "blocked violations" in text.lower()
+
+    def totals_row(measure):
+        match = re.search(
+            rf"^\|\s*{re.escape(measure)}\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*$",
+            text, flags=re.MULTILINE,
+        )
+        assert match, f"no totals row found for {measure!r} in:\n{text}"
+        return int(match.group(1)), int(match.group(2))
+
+    assert totals_row("blocked violations") == (jev_blocked, base_blocked)
+    assert totals_row("path cells") == (jev_cells, base_cells)
+
+    per_tick_section = text.split("## Per tick", 1)[1].split("## Where they disagreed", 1)[0]
+    per_tick_rows = re.findall(r"^\|\s*\d+\s*\|", per_tick_section, flags=re.MULTILINE)
+    assert len(per_tick_rows) == len(run.ticks)
 
 
 def test_explain_shows_every_probability_and_the_resulting_multiplier(tmp_path):
@@ -102,11 +129,18 @@ def test_explain_rejects_an_unknown_zone(tmp_path):
 def test_disagree_reports_the_spill_the_baseline_will_not_release(tmp_path):
     """At t=2 the mini scenario's spill has been mopped and the truth label is
     back to clear. The calm client leaves aisle-1 open; the baseline still blocks
-    on the word. The row must appear and must name the winner."""
+    on the word. The row must appear and must name the winner.
+
+    At t=1 the spill is still live and truth is genuinely `blocked`: there the
+    calm client leaves aisle-1 open while the baseline correctly blocks it, so
+    the table must also report a `baseline right` row. A demo that only ever
+    reported its own model winning would not be worth believing.
+    """
     s, run = recorded(tmp_path)
     text = disagree_text(s, run)
     assert "aisle-1" in text
     assert "jev right" in text
+    assert "baseline right" in text
 
 
 def test_a_difference_of_degree_is_not_scored_as_a_win(tmp_path):

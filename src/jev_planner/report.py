@@ -110,7 +110,7 @@ def write_report(scenario: Scenario, run: RunDir) -> Path:
         f"# {scenario.name}",
         "",
         f"Model `{manifest['model']}`, {manifest['input_tokens']} input tokens, "
-        f"about ${manifest['estimated_usd']}.",
+        f"about ${manifest['estimated_usd']:.4f}.",
         "",
         "## Scored against the hidden labels",
         "",
