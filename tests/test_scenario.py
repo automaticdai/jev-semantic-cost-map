@@ -7,6 +7,8 @@ from tests.helpers import uniform_layer
 
 SCENARIO = "config/scenarios/night-shift.yaml"
 
+AISLE_IDS = ("aisle-1", "aisle-2", "aisle-3", "aisle-4", "aisle-5", "aisle-6")
+
 
 def scenario():
     return load_scenario(SCENARIO)
@@ -29,6 +31,31 @@ def test_every_station_is_reachable_from_every_other():
             if start == goal:
                 continue
             assert plan_single(s.world, layer, "probe", start, goal) is not None
+
+
+def test_each_aisle_actually_connects_the_north_and_south_corridors():
+    """test_every_station_is_reachable_from_every_other cannot see a sealed
+    aisle: dock-A, dock-B, stage and charge all sit in bays or staging that
+    touch the full-width north and south cross corridors directly, so every
+    station-to-station route can go around a blocked aisle via that corridor
+    "highway" without ever entering it. Blocking every OTHER aisle removes
+    that detour, so each check below fails if and only if the aisle under
+    test is itself sealed. The final assertion proves the corridors alone
+    cannot connect north to south, which is what makes the per-aisle checks
+    meaningful rather than vacuous.
+    """
+    s = scenario()
+    world = s.world
+    for aisle_id in AISLE_IDS:
+        other_aisles = tuple(a for a in AISLE_IDS if a != aisle_id)
+        layer = uniform_layer(world, blocked=other_aisles)
+        x = world.zones[aisle_id].x + 1
+        north, south = (x, 6), (x, 43)
+        assert plan_single(world, layer, "probe", north, south) is not None, aisle_id
+
+    all_blocked = uniform_layer(world, blocked=AISLE_IDS)
+    x = world.zones[AISLE_IDS[0]].x + 1
+    assert plan_single(world, all_blocked, "probe", (x, 6), (x, 43)) is None
 
 
 def test_no_agv_starts_on_a_wall():
