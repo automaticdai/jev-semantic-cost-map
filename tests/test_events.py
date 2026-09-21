@@ -1,3 +1,6 @@
+import pytest
+import yaml
+
 from jev_planner.events import initial_agvs, load_scenario, state_at
 
 
@@ -51,3 +54,45 @@ def test_states_are_independent_snapshots():
     first = state_at(s, 1, agvs)
     state_at(s, 2, agvs)
     assert len(first.notes["aisle-1"]) == 1
+
+
+def test_event_with_unknown_zone_raises_valueerror(tmp_path):
+    import shutil
+    with open("tests/fixtures/mini-scenario.yaml") as fh:
+        data = yaml.safe_load(fh)
+    shutil.copy("tests/fixtures/mini.yaml", tmp_path / "mini.yaml")
+    data["ticks"][1]["events"].append({
+        "zone": "unknown-zone",
+        "note": "This zone does not exist"
+    })
+    bad_scenario = tmp_path / "bad-scenario.yaml"
+    with open(bad_scenario, "w") as fh:
+        yaml.dump(data, fh)
+    with pytest.raises(ValueError, match="unknown zone"):
+        load_scenario(bad_scenario)
+
+
+def test_truth_with_unknown_zone_raises_valueerror(tmp_path):
+    import shutil
+    with open("tests/fixtures/mini-scenario.yaml") as fh:
+        data = yaml.safe_load(fh)
+    shutil.copy("tests/fixtures/mini.yaml", tmp_path / "mini.yaml")
+    data["ticks"][1]["truth"]["unknown-zone"] = "blocked"
+    bad_scenario = tmp_path / "bad-scenario.yaml"
+    with open(bad_scenario, "w") as fh:
+        yaml.dump(data, fh)
+    with pytest.raises(ValueError, match="unknown zone"):
+        load_scenario(bad_scenario)
+
+
+def test_truth_with_invalid_label_raises_valueerror(tmp_path):
+    import shutil
+    with open("tests/fixtures/mini-scenario.yaml") as fh:
+        data = yaml.safe_load(fh)
+    shutil.copy("tests/fixtures/mini.yaml", tmp_path / "mini.yaml")
+    data["ticks"][1]["truth"]["aisle-1"] = "invalid-label"
+    bad_scenario = tmp_path / "bad-scenario.yaml"
+    with open(bad_scenario, "w") as fh:
+        yaml.dump(data, fh)
+    with pytest.raises(ValueError, match="is not one of"):
+        load_scenario(bad_scenario)
