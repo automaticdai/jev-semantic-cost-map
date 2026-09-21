@@ -52,8 +52,7 @@ def _panel(ax, world: World, layer: CostLayer, paths, title: str) -> None:
     blocked = np.isinf(display)
     display[blocked] = np.nan
 
-    cmap = plt.get_cmap("YlOrRd").copy()
-    cmap.set_bad("#d9d9d9")
+    cmap = matplotlib.colormaps["YlOrRd"].with_extremes(bad="#d9d9d9")
     ax.imshow(display, cmap=cmap, norm=LogNorm(vmin=1.0, vmax=12.0), origin="upper")
 
     overlay = np.zeros((*display.shape, 4))
@@ -102,7 +101,11 @@ def render_run(scenario: Scenario, run: RunDir) -> Path:
     for tick in run.ticks:
         render_tick(scenario, run, tick)
     frames = [Image.open(p) for p in sorted(run.frames_dir.glob("t*.png"))]
-    frames[0].save(
-        run.gif_path, save_all=True, append_images=frames[1:], duration=1400, loop=0
-    )
+    try:
+        frames[0].save(
+            run.gif_path, save_all=True, append_images=frames[1:], duration=1400, loop=0
+        )
+    finally:
+        for frame in frames:
+            frame.close()
     return run.gif_path
