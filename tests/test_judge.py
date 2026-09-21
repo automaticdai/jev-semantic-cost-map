@@ -88,3 +88,19 @@ def test_a_changed_state_misses_the_cache(tmp_path):
 
 def test_cache_key_depends_on_the_model(tmp_path):
     assert cache_key(STATE, QUESTIONS, "jev-1.13.0") != cache_key(STATE, QUESTIONS, "jev-latest")
+
+
+def test_a_corrupt_cache_file_is_treated_as_a_miss(tmp_path):
+    cache_path = tmp_path / "c.json"
+    cache_path.write_text("{not json")
+    client = FakeClient()
+    judgment = Judge(client=client, cache_path=cache_path).judge(STATE, QUESTIONS)
+    assert client.calls == 1
+    assert judgment.cached is False
+    assert json.loads(cache_path.read_text())
+
+
+def test_a_successful_write_leaves_no_stray_temp_files(tmp_path):
+    cache_path = tmp_path / "c.json"
+    Judge(client=FakeClient(), cache_path=cache_path).judge(STATE, QUESTIONS)
+    assert list(tmp_path.iterdir()) == [cache_path]

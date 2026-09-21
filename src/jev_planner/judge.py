@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Protocol
@@ -108,10 +110,29 @@ class Judge:
     def _read_cache(self) -> dict:
         if not self._cache_path or not self._cache_path.exists():
             return {}
-        return json.loads(self._cache_path.read_text())
+        # A cache is an optimization, not a source of truth: a truncated or
+        # otherwise unreadable file (e.g. from an interrupted write) should
+        # cost a re-query, not take down the run.
+        try:
+            return json.loads(self._cache_path.read_text())
+        except (json.JSONDecodeError, OSError):
+            return {}
 
     def _write_cache(self, cache: dict) -> None:
         if not self._cache_path:
             return
         self._cache_path.parent.mkdir(parents=True, exist_ok=True)
-        self._cache_path.write_text(json.dumps(cache, indent=1, sort_keys=True))
+        # Write to a temp file in the same directory and rename into place so
+        # a reader never observes a half-written cache file: os.replace is
+        # atomic on the same filesystem.
+        fd, tmp_name = tempfile.mkstemp(
+            dir=self._cache_path.parent, prefix=self._cache_path.name + ".", suffix=".tmp"
+        )
+        tmp_path = Path(tmp_name)
+        try:
+            with os.fdopen(fd, "w") as f:
+                f.write(json.dumps(cache, indent=1, sort_keys=True))
+            os.replace(tmp_path, self._cache_path)
+        except BaseException:
+            tmp_path.unlink(missing_ok=True)
+            raise
