@@ -1,0 +1,35 @@
+[project]
+name = "jev-motion-planner"
+version = "0.1.0"
+description = "Motion planning where Jev judges the scene and code owns the geometry"
+requires-python = ">=3.12"
+dependencies = [
+    "typesafe-sdk>=0.7",
+    "numpy>=2.0",
+    "matplotlib>=3.9",
+    "pillow>=10.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+jev-planner = "jev_planner.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/jev_planner"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# `pythonpath` puts the repo root on sys.path so `from tests.helpers import ...`
+# resolves under the src layout. `addopts` keeps the live test out of the default
+# suite even when TYPESAFE_API_KEY is exported; `-m live` on the command line
+# overrides it.
+pythonpath = ["."]
+addopts = ["-m", "not live"]
+markers = ["live: hits the real TypeSafe API; skipped without TYPESAFE_API_KEY"]
