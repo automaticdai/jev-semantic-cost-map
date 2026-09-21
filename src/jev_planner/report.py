@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from .costs import ZoneCost
-from .events import Scenario
+from .events import AVOID, BLOCKED, CLEAR, Scenario
 from .planner import Plan
 from .runs import RunDir
 from .world import Cell, World
@@ -52,12 +52,12 @@ def score_tick(
             continue
         cells += len(plan.path) - 1
         for zone in _zones_entered(world, plan.path):
-            if truth.get(zone) == "blocked":
+            if truth.get(zone) == BLOCKED:
                 blocked += 1
-            elif truth.get(zone) == "avoid":
+            elif truth.get(zone) == AVOID:
                 avoid += 1
     false_blocks = sum(
-        1 for zone, cost in zone_costs.items() if cost.blocked and truth.get(zone) == "clear"
+        1 for zone, cost in zone_costs.items() if cost.blocked and truth.get(zone) == CLEAR
     )
     return TickScore(tick, source, blocked, avoid, false_blocks, cells, deferrals)
 
@@ -96,7 +96,13 @@ def _totals(scores: Sequence[TickScore]) -> dict[str, int]:
         "blocked violations": sum(s.blocked_violations for s in scores),
         "avoid traversals": sum(s.avoid_traversals for s in scores),
         "false blocks": sum(s.false_blocks for s in scores),
-        "path cells": sum(s.path_cells for s in scores),
+        # "planned route cells", not distance driven: this sums the length of
+        # the whole remaining route recomputed at every tick, so with
+        # cells_per_tick < the route length the same stretch is counted again
+        # at the next tick. It measures how much route each cost model
+        # commits to, not what an AGV travelled. See the README's Scoring
+        # section for the asymmetry this creates between jev and baseline.
+        "planned route cells": sum(s.path_cells for s in scores),
         "deferrals": sum(s.deferrals for s in scores),
     }
 
@@ -121,7 +127,8 @@ def write_report(scenario: Scenario, run: RunDir) -> Path:
         lines.append(f"| {key} | {jev[key]} | {base[key]}  |")
 
     lines += ["", "## Per tick", "",
-              "| tick | clock | jev blocked | base blocked | jev cells | base cells | deferred |",
+              "| tick | clock | jev blocked | base blocked | jev route cells | "
+              "base route cells | deferred |",
               "| ---: | --- | ---: | ---: | ---: | ---: | --- |"]
     for entry, j, b in zip(manifest["ticks"], scores["jev"], scores["baseline"]):
         lines.append(
@@ -170,12 +177,12 @@ def explain_text(scenario: Scenario, run: RunDir, zone: str, tick: int) -> str:
 
 def _verdict(jev_blocked: bool, base_blocked: bool, truth: str) -> str:
     def right(blocked: bool) -> bool:
-        return blocked if truth == "blocked" else not blocked
+        return blocked if truth == BLOCKED else not blocked
 
     if not jev_blocked and not base_blocked:
         # Neither called it closed, so this row is a difference of degree.
         # Calling that a win for either model would be reading too much into it.
-        return "both wrong" if truth == "blocked" else "degree only"
+        return "both wrong" if truth == BLOCKED else "degree only"
     if right(jev_blocked) and not right(base_blocked):
         return "jev right"
     if right(base_blocked) and not right(jev_blocked):

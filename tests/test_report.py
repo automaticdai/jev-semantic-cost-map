@@ -1,12 +1,21 @@
 import datetime as dt
 import re
 
+import pytest
+
 from jev_planner.baseline import DEFAULT_RULES
 from jev_planner.costs import DEFAULT_WEIGHTS, ZoneCost
 from jev_planner.events import load_scenario
 from jev_planner.judge import Judge
 from jev_planner.planner import Plan
-from jev_planner.report import disagree_text, explain_text, score_run, score_tick, write_report
+from jev_planner.report import (
+    _costs_of,
+    disagree_text,
+    explain_text,
+    score_run,
+    score_tick,
+    write_report,
+)
 from jev_planner.runs import RunDir
 from jev_planner.shift import run_shift
 from jev_planner.world import load_world_file
@@ -101,7 +110,7 @@ def test_the_report_names_both_models_and_the_totals(tmp_path):
         return int(match.group(1)), int(match.group(2))
 
     assert totals_row("blocked violations") == (jev_blocked, base_blocked)
-    assert totals_row("path cells") == (jev_cells, base_cells)
+    assert totals_row("planned route cells") == (jev_cells, base_cells)
 
     per_tick_section = text.split("## Per tick", 1)[1].split("## Where they disagreed", 1)[0]
     per_tick_rows = re.findall(r"^\|\s*\d+\s*\|", per_tick_section, flags=re.MULTILINE)
@@ -109,12 +118,41 @@ def test_the_report_names_both_models_and_the_totals(tmp_path):
 
 
 def test_explain_shows_every_probability_and_the_resulting_multiplier(tmp_path):
+    """Checks values, not just the presence of labels: every number printed by
+    explain_text is parsed back out of the rendered text and checked against
+    the same data explain_text itself reads (run.read_tick("answers", tick)
+    and _costs_of(run, tick, "jev")), so the test fails if a score, a
+    confidence, or the multiplier printed is wrong -- including the jev
+    multiplier line silently printing the baseline's numbers instead."""
     s, run = recorded(tmp_path)
-    text = explain_text(s, run, "aisle-1", 1)
-    assert "people" in text and "damage" in text and "delay" in text
-    assert "offlimits" in text
-    assert "multiplier" in text
-    assert "confidence" in text
+    zone, tick = "aisle-1", 1
+    text = explain_text(s, run, zone, tick)
+
+    answers = run.read_tick("answers", tick)
+    jev = _costs_of(run, tick, "jev")[zone]
+
+    for dimension in ("people", "damage", "delay"):
+        answer = answers[f"{zone}.{dimension}"]
+        match = re.search(
+            rf"^\s*{dimension}\s+([\d.]+)/\d+\s+confidence\s+([\d.]+)",
+            text,
+            flags=re.MULTILINE,
+        )
+        assert match, f"no {dimension!r} line found in:\n{text}"
+        score, confidence = float(match.group(1)), float(match.group(2))
+        assert score == pytest.approx(answer["score"], abs=0.005)
+        assert confidence == pytest.approx(answer["confidence"], abs=0.005)
+
+    offlimits = answers[f"{zone}.offlimits"]
+    match = re.search(r"offlimits\s+P\(closed\)\s*=\s*([\d.]+)", text)
+    assert match, f"no offlimits line found in:\n{text}"
+    assert float(match.group(1)) == pytest.approx(offlimits["noul"], abs=0.005)
+
+    match = re.search(r"^\s*jev\s+multiplier\s+([\d.]+)\s+blocked=(\w+)", text, flags=re.MULTILINE)
+    assert match, f"no jev multiplier line found in:\n{text}"
+    multiplier, blocked = float(match.group(1)), match.group(2) == "True"
+    assert multiplier == pytest.approx(jev.multiplier, abs=0.005)
+    assert blocked == jev.blocked
 
 
 def test_explain_rejects_an_unknown_zone(tmp_path):

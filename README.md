@@ -33,11 +33,11 @@ until tick 10 — yet Jev's `offlimits` probability drifted from 0.66 (t7) to
 0.60 (t8) to 0.44 (t9) with no new information, crossing the block threshold a
 tick early. The keyword baseline, which just re-matches `leak` against the
 same static text every tick, held the block correctly. `disagree` records this
-as `baseline right`. Two ticks later (9 and 10), the same run shows the
-opposite: a stalled AGV closes junction-4 by a standing-rule judgment call
+as `baseline right`. In those same two ticks (9 and 10), the same run shows
+the opposite: a stalled AGV closes junction-4 by a standing-rule judgment call
 ("blocked", `offlimits` P > 0.5) that no keyword in `config/rules.yaml` matches
-("stalled" fires nothing), so the baseline drives straight through it — the
-run's one actual `blocked violation`, versus zero for Jev.
+("stalled" fires nothing), so the baseline's plan routes straight through it —
+the run's one actual `blocked violation`, versus zero for Jev.
 
 ## What Jev decides, and what it does not
 
@@ -81,8 +81,18 @@ Totals over the recorded night-shift run (`runs/example-night-shift/report.md`):
 | blocked violations | 0 | 1 |
 | avoid traversals | 8 | 8 |
 | false blocks | 0 | 11 |
-| path cells | 2770 | 2671 |
+| planned route cells | 2770 | 2671 |
 | deferrals | 2 | 2 |
+
+`planned route cells` is not distance travelled: every tick, each model plans
+its whole remaining route and only the first `cells_per_tick` cells of that
+route are ever driven, so the same stretch is planned again at the next tick.
+The AGVs in this run execute Jev's plans only — the baseline replans every
+tick from the same positions Jev's plan drove the AGVs to, and is scored on
+routes it never gets to drive. That asymmetry is deliberate: it is what makes
+a same-position, per-tick comparison of the two cost models possible without
+running the shift twice. It does mean `planned route cells` measures how much
+route each cost model committed to, not what either one actually travelled.
 
 Jev never drove an AGV into a zone the ground truth called `blocked`, and never
 falsely blocked a zone that was actually `clear` — the baseline's 11 false
@@ -94,12 +104,12 @@ aisle-5 drift described above shows the model's own answers moving between
 ticks on unchanged evidence. Treat the numbers here as a recorded anecdote
 with ground truth, not a claim of general accuracy.
 
-The baseline travels 99 fewer cells over the shift, but that is not a planning
-win either way. Per-tick, the gap (jev cells minus baseline cells) is
-10, 9, 4, 4, 2, 2, 0, 0, 0, 0, 38, 30 across ticks 0–11. The single biggest
-piece, 38 cells at tick 10, is the baseline driving straight through the
-stalled-AGV junction it never priced (junction-4, its one real
-`blocked violation`, and the only tick where Jev's path touches zero
+The baseline's plans route through 99 fewer cells over the shift, but that is
+not a planning win either way. Per-tick, the gap (jev route cells minus
+baseline route cells) is 10, 9, 4, 4, 2, 2, 0, 0, 0, 0, 38, 30 across ticks
+0–11. The single biggest piece, 38 cells at tick 10, is the baseline's plan
+routing straight through the stalled-AGV junction it never priced (junction-4,
+its one real `blocked violation`, and the only tick where Jev's path touches zero
 junction-4 cells against the baseline's 25). The 31 cells spread across ticks
 0–5 predate that incident entirely and are just Jev routing more cautiously
 through ordinary elevated-cost zones. The remaining 30 cells, at tick 11,

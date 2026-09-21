@@ -9,12 +9,12 @@ Model `jev-1.13.0`, 94431 input tokens, about $0.0040.
 | blocked violations | 0 | 1  |
 | avoid traversals | 8 | 8  |
 | false blocks | 0 | 11  |
-| path cells | 2770 | 2671  |
+| planned route cells | 2770 | 2671  |
 | deferrals | 2 | 2  |
 
 ## Per tick
 
-| tick | clock | jev blocked | base blocked | jev cells | base cells | deferred |
+| tick | clock | jev blocked | base blocked | jev route cells | base route cells | deferred |
 | ---: | --- | ---: | ---: | ---: | ---: | --- |
 | 0 | 13:00 | 0 | 0 | 392 | 382 | - |
 | 1 | 13:10 | 0 | 0 | 346 | 337 | - |
