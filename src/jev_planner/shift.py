@@ -146,6 +146,7 @@ def run_shift(
             tick_entries.append(failure)
         manifest = {
             "scenario": scenario.name,
+            "scenario_path": str(scenario.path),
             "model": model,
             "input_tokens": total_tokens,
             "estimated_usd": round(total_tokens * 0.042 / 1_000_000, 6),

@@ -39,6 +39,10 @@ def test_clock_comes_from_the_tick():
     assert state_at(s, 1, initial_agvs(s.world)).clock == "13:10"
 
 
+def test_scenario_remembers_where_it_was_loaded_from():
+    assert scenario().path.name == "mini-scenario.yaml"
+
+
 def test_initial_agvs_start_at_their_station_with_no_route():
     s = scenario()
     agvs = initial_agvs(s.world)

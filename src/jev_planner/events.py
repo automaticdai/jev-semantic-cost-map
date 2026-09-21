@@ -49,6 +49,7 @@ class Scenario:
     clocks: tuple[str, ...]
     events: tuple[tuple[Event, ...], ...]
     truth: tuple[Mapping[str, str], ...]
+    path: Path
 
     @property
     def tick_count(self) -> int:
@@ -94,6 +95,7 @@ def load_scenario(path: str | Path) -> Scenario:
         clocks=tuple(clocks),
         events=tuple(events),
         truth=tuple(truth),
+        path=path,
     )
 
 

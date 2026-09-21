@@ -81,6 +81,14 @@ def test_the_manifest_records_the_model_tokens_and_weights(tmp_path):
     assert all(t["status"] == "ok" for t in m["ticks"])
 
 
+def test_the_manifest_records_the_scenario_path(tmp_path):
+    s = scenario()
+    run = RunDir.create(tmp_path, s.name, when=dt.datetime(2026, 9, 21, 14, 2))
+    run_shift(s, Judge(client=CalmClient(), cache_path=tmp_path / "c.json"), run,
+              DEFAULT_WEIGHTS, DEFAULT_RULES)
+    assert run.read_manifest()["scenario_path"].endswith("mini-scenario.yaml")
+
+
 def test_stored_plans_carry_both_sources(tmp_path):
     s = scenario()
     run = RunDir.create(tmp_path, s.name, when=dt.datetime(2026, 9, 21, 14, 2))

@@ -29,6 +29,9 @@ def _parser() -> argparse.ArgumentParser:
     run.add_argument("--model", default=None)
     run.add_argument("--dry-run", action="store_true",
                      help="print tick 0's state and questions; make no API call")
+
+    replay = sub.add_parser("replay", help="re-render a stored run; no network")
+    replay.add_argument("run")
     return parser
 
 
@@ -66,12 +69,21 @@ def _cmd_run(args) -> int:
     return 0
 
 
+def _cmd_replay(args) -> int:
+    from .render import render_run
+
+    run = RunDir.open(args.run)
+    scenario = load_scenario(run.read_manifest()["scenario_path"])
+    print(render_run(scenario, run))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     try:
         args = _parser().parse_args(argv)
     except SystemExit as exit_:
         return int(exit_.code or 0)
-    return {"run": _cmd_run}[args.command](args)
+    return {"run": _cmd_run, "replay": _cmd_replay}[args.command](args)
 
 
 if __name__ == "__main__":
