@@ -156,6 +156,7 @@ def plan_all(
             plans[request.agv] = Plan(
                 agv=request.agv, path=(request.start,), cost=0.0, deferred=True
             )
+            reservations.add((request.start,))
             continue
         reservations.add(plan.path)
         plans[request.agv] = plan

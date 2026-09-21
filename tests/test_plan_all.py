@@ -26,8 +26,12 @@ def assert_no_conflicts(plans):
 
 
 def test_the_edge_rule_holds_end_to_end():
-    """`Reservations.edge` is unit-tested above; this is the behavioural check
-    that plan_all never produces a swap, which no vertex check would catch."""
+    """This checks that reservations are genuinely plumbed through plan_all:
+    without them, both AGVs would collide head-on at (2,0)/t=2 (a shared
+    vertex, which a vertex check alone would catch); with them wired through,
+    agv-2 reroutes instead. The edge rule proper -- rejecting a swap that no
+    vertex check would catch -- is pinned by
+    test_a_live_search_detects_an_oncoming_swap in tests/test_planner.py."""
     w = grid_world(5, 2)
     plans = plan_all(
         w,
@@ -86,3 +90,24 @@ def test_every_requested_agv_appears_in_the_result():
     w = grid_world(5, 1)
     requests = [PlanRequest("agv-1", 1, (0, 0), (4, 0)), PlanRequest("agv-2", 2, (4, 0), (0, 0))]
     assert set(plan_all(w, uniform_layer(w), requests)) == {"agv-1", "agv-2"}
+
+
+def test_a_deferred_agv_still_reserves_the_cell_it_is_stalled_on():
+    """A deferred AGV is stalled, not absent: it is still physically sitting
+    on its start cell, so a lower-priority AGV planned afterward must not be
+    routed through it. agv-a parks at (2,0), which blocks the one-wide lane
+    and correctly defers agv-b (stalled at (4,0)). agv-c must then be routed
+    around agv-b's stalled position, not straight through it."""
+    w = grid_world(7, 1)
+    plans = plan_all(
+        w,
+        uniform_layer(w),
+        [
+            PlanRequest("agv-a", 1, (0, 0), (2, 0)),
+            PlanRequest("agv-b", 2, (4, 0), (0, 0)),
+            PlanRequest("agv-c", 3, (6, 0), (3, 0)),
+        ],
+    )
+    assert plans["agv-b"].deferred is True
+    assert (4, 0) not in plans["agv-c"].path
+    assert_no_conflicts(plans)
