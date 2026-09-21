@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import subprocess
 from dataclasses import dataclass
 from typing import Mapping, Sequence
 
@@ -18,8 +19,34 @@ from .state import build_state
 from .world import Cell, World
 
 
+# Jev's published price, from the pricing table at https://console.typesafe.ai/,
+# as of 2026-09: $0.042 per million input tokens.
+JEV_PRICE_PER_MTOK_USD = 0.042
+
+
 class ShiftAborted(RuntimeError):
     """A tick failed for good. Artifacts already written stay on disk."""
+
+
+def _git_sha() -> str | None:
+    """The current HEAD sha, or None if git is absent or this isn't a repo.
+
+    Recorded in the manifest per the spec's run-directory section, so a run
+    can always be traced back to the code that produced it. Never lets a
+    missing git binary or a non-repo working directory crash a run.
+    """
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
+        return None
+    if result.returncode != 0:
+        return None
+    return result.stdout.strip()
 
 
 @dataclass(frozen=True)
@@ -140,6 +167,7 @@ def run_shift(
     tick_entries: list[dict] = []
     total_tokens = 0
     model = ""
+    git_sha = _git_sha()
 
     def finish(failure: dict | None = None) -> dict:
         if failure:
@@ -148,8 +176,9 @@ def run_shift(
             "scenario": scenario.name,
             "scenario_path": str(scenario.path),
             "model": model,
+            "git_sha": git_sha,
             "input_tokens": total_tokens,
-            "estimated_usd": round(total_tokens * 0.042 / 1_000_000, 6),
+            "estimated_usd": round(total_tokens * JEV_PRICE_PER_MTOK_USD / 1_000_000, 6),
             "weights": {
                 "people": weights.people,
                 "damage": weights.damage,

@@ -81,6 +81,18 @@ def test_the_manifest_records_the_model_tokens_and_weights(tmp_path):
     assert all(t["status"] == "ok" for t in m["ticks"])
 
 
+def test_the_manifest_records_a_git_sha(tmp_path):
+    """The spec requires the manifest to carry the git sha the run was produced
+    under. It may be None outside a git checkout, but the key must exist."""
+    s = scenario()
+    run = RunDir.create(tmp_path, s.name, when=dt.datetime(2026, 9, 21, 14, 2))
+    run_shift(s, Judge(client=CalmClient(), cache_path=tmp_path / "c.json"), run,
+              DEFAULT_WEIGHTS, DEFAULT_RULES)
+    manifest = run.read_manifest()
+    assert "git_sha" in manifest
+    assert manifest["git_sha"] is None or isinstance(manifest["git_sha"], str)
+
+
 def test_the_manifest_records_the_scenario_path(tmp_path):
     s = scenario()
     run = RunDir.create(tmp_path, s.name, when=dt.datetime(2026, 9, 21, 14, 2))

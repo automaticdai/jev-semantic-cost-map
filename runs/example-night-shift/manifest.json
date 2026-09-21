@@ -2,6 +2,7 @@
  "scenario": "night-shift",
  "scenario_path": "config/scenarios/night-shift.yaml",
  "model": "jev-1.13.0",
+ "git_sha": "11abc5b00179471aafc44478d78353aa35d61d15",
  "input_tokens": 94431,
  "estimated_usd": 0.003966,
  "weights": {
