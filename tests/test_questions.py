@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 from typesafe_sdk import Noul, Score
 
 from jev_planner.questions import (
@@ -46,3 +49,20 @@ def test_instructions_name_the_zone_by_a_backticked_state_path():
 def test_a_question_mentions_no_other_zone():
     q = build_questions(world())
     assert "aisle-2" not in q[question_id("aisle-1", "damage")].instructions
+
+
+def test_golden_snapshot_of_questions():
+    """
+    The level texts and instructions are validated against the live Jev model.
+    This fixture is a tripwire: if it fails, either revert the wording change
+    or regenerate the fixture deliberately, knowing the demo's measured
+    behaviour may shift.
+    """
+    fixture_path = Path(__file__).parent / "fixtures" / "questions-golden.json"
+    with open(fixture_path) as f:
+        golden = json.load(f)
+
+    questions = build_questions(world())
+    actual = {qid: q.model_dump(mode="json") for qid, q in questions.items()}
+
+    assert actual == golden

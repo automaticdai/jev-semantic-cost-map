@@ -1,0 +1,70 @@
+{
+ "aisle-1.damage": {
+  "criteria": [
+   "Nothing here is vulnerable; a clear, rated travel surface.",
+   "Goods are present but robust and clear of the lane.",
+   "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  ],
+  "instructions": "Considering only zone `zones.aisle-1`, how likely is an AGV passing through it right now to damage goods, the floor surface, or itself? Read the zone's notes in order; a later note can cancel an earlier one.",
+  "type": "score"
+ },
+ "aisle-1.delay": {
+  "criteria": [
+   "Clear; an AGV passes at full speed.",
+   "Light traffic or a narrow point; a short slowdown.",
+   "Busy; an AGV would likely have to stop and wait.",
+   "Effectively impassable without a long wait."
+  ],
+  "instructions": "Considering only zone `zones.aisle-1`, how much would an AGV be slowed by congestion or obstruction in it right now? Judge delay alone, ignoring how safe or damaging the pass would be.",
+  "type": "score"
+ },
+ "aisle-1.offlimits": {
+  "instructions": "Is zone `zones.aisle-1` closed to AGV traffic right now by an explicit instruction, an active incident, or a standing rule? Answer no if the zone is merely a poor choice rather than closed.",
+  "type": "noul"
+ },
+ "aisle-1.people": {
+  "criteria": [
+   "No one works in this zone and no one is expected in it during this shift.",
+   "People pass through occasionally but no one is working here now.",
+   "People are working in this zone now, clear of the travel lane.",
+   "People are working in or across the travel lane, where an AGV would pass."
+  ],
+  "instructions": "Considering only zone `zones.aisle-1`, how exposed would a person be if an AGV drove through it right now? Read the zone's notes in order; a later note can cancel an earlier one.",
+  "type": "score"
+ },
+ "aisle-2.damage": {
+  "criteria": [
+   "Nothing here is vulnerable; a clear, rated travel surface.",
+   "Goods are present but robust and clear of the lane.",
+   "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  ],
+  "instructions": "Considering only zone `zones.aisle-2`, how likely is an AGV passing through it right now to damage goods, the floor surface, or itself? Read the zone's notes in order; a later note can cancel an earlier one.",
+  "type": "score"
+ },
+ "aisle-2.delay": {
+  "criteria": [
+   "Clear; an AGV passes at full speed.",
+   "Light traffic or a narrow point; a short slowdown.",
+   "Busy; an AGV would likely have to stop and wait.",
+   "Effectively impassable without a long wait."
+  ],
+  "instructions": "Considering only zone `zones.aisle-2`, how much would an AGV be slowed by congestion or obstruction in it right now? Judge delay alone, ignoring how safe or damaging the pass would be.",
+  "type": "score"
+ },
+ "aisle-2.offlimits": {
+  "instructions": "Is zone `zones.aisle-2` closed to AGV traffic right now by an explicit instruction, an active incident, or a standing rule? Answer no if the zone is merely a poor choice rather than closed.",
+  "type": "noul"
+ },
+ "aisle-2.people": {
+  "criteria": [
+   "No one works in this zone and no one is expected in it during this shift.",
+   "People pass through occasionally but no one is working here now.",
+   "People are working in this zone now, clear of the travel lane.",
+   "People are working in or across the travel lane, where an AGV would pass."
+  ],
+  "instructions": "Considering only zone `zones.aisle-2`, how exposed would a person be if an AGV drove through it right now? Read the zone's notes in order; a later note can cancel an earlier one.",
+  "type": "score"
+ }
+}
