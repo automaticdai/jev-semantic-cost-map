@@ -124,3 +124,39 @@ def _reconstruct(
         path.append(node[0])
     path.reverse()
     return tuple(path)
+
+
+@dataclass(frozen=True)
+class PlanRequest:
+    agv: str
+    priority: int
+    start: Cell
+    goal: Cell
+
+
+def plan_all(
+    world: World,
+    layer: CostLayer,
+    requests: Sequence[PlanRequest],
+    horizon: int = HORIZON,
+) -> dict[str, Plan]:
+    """Plan in priority order, each AGV reserving space-time for the next.
+
+    This is prioritized planning, which is incomplete: a low-priority AGV can be
+    starved by higher-priority traffic. Starvation surfaces as a deferral rather
+    than an exception, and the report lists deferrals per tick.
+    """
+    reservations = Reservations(horizon)
+    plans: dict[str, Plan] = {}
+    for request in sorted(requests, key=lambda r: r.priority):
+        plan = plan_single(
+            world, layer, request.agv, request.start, request.goal, reservations, horizon
+        )
+        if plan is None:
+            plans[request.agv] = Plan(
+                agv=request.agv, path=(request.start,), cost=0.0, deferred=True
+            )
+            continue
+        reservations.add(plan.path)
+        plans[request.agv] = plan
+    return plans
