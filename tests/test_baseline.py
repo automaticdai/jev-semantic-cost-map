@@ -54,7 +54,13 @@ def test_a_block_wins_over_multipliers_regardless_of_order():
     assert costs["aisle-1"].blocked is True
 
 
-def test_matching_is_case_insensitive_and_reads_the_description_too():
+def test_matching_is_case_insensitive():
+    """Keyword appears only in uppercase; match requires .lower()."""
+    costs = baseline_costs(world(), state({"aisle-1": ("PICKERS working in BAY B",)}), (Rule("picker", 3.0, False),))
+    assert costs["aisle-1"].multiplier == pytest.approx(3.0)
+
+
+def test_matching_reads_the_description_too():
     costs = baseline_costs(world(), state({}), (Rule("pallet racking", 4.0, False),))
     assert costs["aisle-1"].multiplier == pytest.approx(4.0)
 
