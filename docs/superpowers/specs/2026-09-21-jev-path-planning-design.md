@@ -1,4 +1,4 @@
-# jev-motion-planner — design
+# jev-path-planning — design
 
 Date: 2026-09-21
 Status: approved, ready for implementation planning
@@ -6,7 +6,7 @@ Status: approved, ready for implementation planning
 ## What this is
 
 A demo that puts [Jev](https://docs.typesafe.ai) in charge of the *semantic* layer of
-motion planning for warehouse AGVs, and leaves every geometric decision to ordinary
+path planning for warehouse AGVs, and leaves every geometric decision to ordinary
 code.
 
 A warehouse floor is described in YAML: static geometry plus named zones with
@@ -55,7 +55,7 @@ them):
 
 ## Package and dependencies
 
-Repository `jev-motion-planner`, Python package `jev_planner` under `src/`, console
+Repository `jev-path-planning`, Python package `jev_planner` under `src/`, console
 script `jev-planner`. Python 3.12, managed with `uv`.
 
 Runtime dependencies: `typesafe-sdk`, `numpy`, `matplotlib`, `pyyaml`, `pillow`

@@ -1,10 +1,10 @@
-# jev-motion-planner
+# jev-path-planning
 
-Motion planning where the geometry is code and the judgment is [Jev](https://docs.typesafe.ai).
+Path planning where the geometry is code and the judgment is [Jev](https://docs.typesafe.ai).
 
 A warehouse floor plan gives you occupancy. It does not tell you that the spill
 in aisle 3 was mopped twenty minutes ago, or that the stock counter in aisle 2 is
-stepping in and out of the lane. jev-motion-planner hands each named zone to Jev
+stepping in and out of the lane. jev-path-planning hands each named zone to Jev
 as four typed questions, turns the answers into a cost layer, and routes four
 AGVs over it with a space-time A\*.
 

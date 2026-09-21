@@ -1,4 +1,4 @@
-# jev-motion-planner Implementation Plan
+# jev-path-planning Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.12, uv, `typesafe-sdk` 0.7, numpy, matplotlib (+pillow for GIF), pyyaml, pytest.
 
-**Spec:** `docs/superpowers/specs/2026-09-21-jev-motion-planner-design.md`
+**Spec:** `docs/superpowers/specs/2026-09-21-jev-path-planning-design.md`
 
 ## Global Constraints
 
@@ -194,9 +194,9 @@ Expected: collection error, `ModuleNotFoundError: No module named 'jev_planner'`
 
 ```toml
 [project]
-name = "jev-motion-planner"
+name = "jev-path-planning"
 version = "0.1.0"
-description = "Motion planning where Jev judges the scene and code owns the geometry"
+description = "Path planning where Jev judges the scene and code owns the geometry"
 requires-python = ">=3.12"
 dependencies = [
     "typesafe-sdk>=0.7",
@@ -4007,13 +4007,13 @@ If the run contradicts the plan's expectations, say so in the handoff rather tha
 `README.md`, following jev-cleaner's shape: what it does, the table that makes the case, install, use, how it works, what the baseline gets right, cost. Fill the numbers from the run you just recorded — **do not copy the numbers below, they are the shape, not the answer**:
 
 ````markdown
-# jev-motion-planner
+# jev-path-planning
 
-Motion planning where the geometry is code and the judgment is [Jev](https://docs.typesafe.ai).
+Path planning where the geometry is code and the judgment is [Jev](https://docs.typesafe.ai).
 
 A warehouse floor plan gives you occupancy. It does not tell you that the spill
 in aisle 3 was mopped twenty minutes ago, or that the stock counter in aisle 2 is
-stepping in and out of the lane. jev-motion-planner hands each named zone to Jev
+stepping in and out of the lane. jev-path-planning hands each named zone to Jev
 as four typed questions, turns the answers into a cost layer, and routes four
 AGVs over it with a space-time A\*.
 
