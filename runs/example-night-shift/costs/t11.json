@@ -1,0 +1,224 @@
+{
+ "jev": {
+  "junction-1": {
+   "multiplier": 3.465,
+   "blocked": false,
+   "detail": {
+    "people": 0.31666666666666665,
+    "damage": 0.0033333333333333335,
+    "delay": 0.37000000000000005,
+    "offlimits": 0.06
+   }
+  },
+  "junction-2": {
+   "multiplier": 2.825,
+   "blocked": false,
+   "detail": {
+    "people": 0.21666666666666667,
+    "damage": 0.013333333333333334,
+    "delay": 0.3233333333333333,
+    "offlimits": 0.05
+   }
+  },
+  "junction-3": {
+   "multiplier": 2.54,
+   "blocked": false,
+   "detail": {
+    "people": 0.2333333333333333,
+    "damage": 0.04,
+    "delay": 0.013333333333333334,
+    "offlimits": 0.05
+   }
+  },
+  "junction-4": {
+   "multiplier": 2.67,
+   "blocked": false,
+   "detail": {
+    "people": 0.2333333333333333,
+    "damage": 0.08,
+    "delay": 0.02,
+    "offlimits": 0.06
+   }
+  },
+  "aisle-1": {
+   "multiplier": 1.885,
+   "blocked": false,
+   "detail": {
+    "people": 0.06666666666666667,
+    "damage": 0.0,
+    "delay": 0.3233333333333333,
+    "offlimits": 0.05
+   }
+  },
+  "aisle-2": {
+   "multiplier": 2.8899999999999997,
+   "blocked": false,
+   "detail": {
+    "people": 0.3,
+    "damage": 0.02666666666666667,
+    "delay": 0.006666666666666667,
+    "offlimits": 0.05
+   }
+  },
+  "aisle-3": {
+   "multiplier": 2.065,
+   "blocked": false,
+   "detail": {
+    "people": 0.17,
+    "damage": 0.013333333333333334,
+    "delay": 0.0033333333333333335,
+    "offlimits": 0.05
+   }
+  },
+  "aisle-4": {
+   "multiplier": 1.26,
+   "blocked": false,
+   "detail": {
+    "people": 0.043333333333333335,
+    "damage": 0.0,
+    "delay": 0.0,
+    "offlimits": 0.04
+   }
+  },
+  "aisle-5": {
+   "multiplier": 2.435,
+   "blocked": false,
+   "detail": {
+    "people": 0.22666666666666668,
+    "damage": 0.023333333333333334,
+    "delay": 0.0033333333333333335,
+    "offlimits": 0.06
+   }
+  },
+  "aisle-6": {
+   "multiplier": 1.505,
+   "blocked": false,
+   "detail": {
+    "people": 0.06,
+    "damage": 0.006666666666666667,
+    "delay": 0.08333333333333333,
+    "offlimits": 0.04
+   }
+  },
+  "bay-A": {
+   "multiplier": 1.69,
+   "blocked": false,
+   "detail": {
+    "people": 0.10666666666666667,
+    "damage": 0.013333333333333334,
+    "delay": 0.006666666666666667,
+    "offlimits": 0.05
+   }
+  },
+  "bay-B": {
+   "multiplier": 2.54,
+   "blocked": false,
+   "detail": {
+    "people": 0.20333333333333334,
+    "damage": 0.10333333333333333,
+    "delay": 0.006666666666666667,
+    "offlimits": 0.1
+   }
+  },
+  "staging-7": {
+   "multiplier": 5.33,
+   "blocked": false,
+   "detail": {
+    "people": 0.20333333333333334,
+    "damage": 0.8266666666666667,
+    "delay": 0.42,
+    "offlimits": 0.14
+   }
+  },
+  "charging": {
+   "multiplier": 1.005,
+   "blocked": false,
+   "detail": {
+    "people": 0.0,
+    "damage": 0.0,
+    "delay": 0.0033333333333333335,
+    "offlimits": 0.09
+   }
+  }
+ },
+ "baseline": {
+  "junction-1": {
+   "multiplier": 1.0,
+   "blocked": false,
+   "detail": {}
+  },
+  "junction-2": {
+   "multiplier": 1.0,
+   "blocked": false,
+   "detail": {}
+  },
+  "junction-3": {
+   "multiplier": 1.0,
+   "blocked": false,
+   "detail": {}
+  },
+  "junction-4": {
+   "multiplier": 1.0,
+   "blocked": false,
+   "detail": {}
+  },
+  "aisle-1": {
+   "multiplier": 1.0,
+   "blocked": false,
+   "detail": {}
+  },
+  "aisle-2": {
+   "multiplier": 1.0,
+   "blocked": false,
+   "detail": {}
+  },
+  "aisle-3": {
+   "multiplier": 1.0,
+   "blocked": true,
+   "detail": {
+    "spill|wet floor|leak|leaking": Infinity
+   }
+  },
+  "aisle-4": {
+   "multiplier": 1.0,
+   "blocked": false,
+   "detail": {}
+  },
+  "aisle-5": {
+   "multiplier": 1.0,
+   "blocked": true,
+   "detail": {
+    "spill|wet floor|leak|leaking": Infinity
+   }
+  },
+  "aisle-6": {
+   "multiplier": 1.0,
+   "blocked": false,
+   "detail": {}
+  },
+  "bay-A": {
+   "multiplier": 1.0,
+   "blocked": false,
+   "detail": {}
+  },
+  "bay-B": {
+   "multiplier": 3.0,
+   "blocked": false,
+   "detail": {
+    "picker|pickers|staff|operator|person|people|engineer": 3.0
+   }
+  },
+  "staging-7": {
+   "multiplier": 2.0,
+   "blocked": false,
+   "detail": {
+    "fragile|glass|glassware|breakable": 2.0
+   }
+  },
+  "charging": {
+   "multiplier": 1.0,
+   "blocked": false,
+   "detail": {}
+  }
+ }
+}

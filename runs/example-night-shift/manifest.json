@@ -1,0 +1,153 @@
+{
+ "scenario": "night-shift",
+ "scenario_path": "config/scenarios/night-shift.yaml",
+ "model": "jev-1.13.0",
+ "input_tokens": 94431,
+ "estimated_usd": 0.003966,
+ "weights": {
+  "people": 6.0,
+  "damage": 3.0,
+  "delay": 1.5
+ },
+ "rules": [
+  {
+   "pattern": "spill|wet floor|leak|leaking",
+   "multiplier": null,
+   "blocked": true
+  },
+  {
+   "pattern": "closed|do not enter|no entry|out of service",
+   "multiplier": null,
+   "blocked": true
+  },
+  {
+   "pattern": "picker|pickers|staff|operator|person|people|engineer",
+   "multiplier": 3.0,
+   "blocked": false
+  },
+  {
+   "pattern": "fragile|glass|glassware|breakable",
+   "multiplier": 2.0,
+   "blocked": false
+  },
+  {
+   "pattern": "obstruction|blocked aisle|pallet left",
+   "multiplier": 2.0,
+   "blocked": false
+  }
+ ],
+ "ticks": [
+  {
+   "tick": 0,
+   "clock": "13:00",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 7634,
+   "request_id": "req_01a0c37f448a7440bbb0d9af3877e2e7",
+   "deferred": []
+  },
+  {
+   "tick": 1,
+   "clock": "13:10",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 7819,
+   "request_id": "req_01a0c37f69427274bb8f2336d20cddcc",
+   "deferred": []
+  },
+  {
+   "tick": 2,
+   "clock": "13:20",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 7838,
+   "request_id": "req_01a0c37f8e2a7476b146611a54e30a7a",
+   "deferred": []
+  },
+  {
+   "tick": 3,
+   "clock": "13:30",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 7862,
+   "request_id": "req_01a0c37fa26f7406b86d1d8f518a3b16",
+   "deferred": []
+  },
+  {
+   "tick": 4,
+   "clock": "13:40",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 7855,
+   "request_id": "req_01a0c37fb27671eeae5c457bcc298181",
+   "deferred": []
+  },
+  {
+   "tick": 5,
+   "clock": "13:50",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 7881,
+   "request_id": "req_01a0c37fbe6273bc8b9dfee3eff01824",
+   "deferred": []
+  },
+  {
+   "tick": 6,
+   "clock": "14:00",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 7870,
+   "request_id": "req_01a0c37fc4057bd5b739096850041a09",
+   "deferred": []
+  },
+  {
+   "tick": 7,
+   "clock": "14:10",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 7871,
+   "request_id": "req_01a0c37fc7fb711ea183c2345fe598c3",
+   "deferred": []
+  },
+  {
+   "tick": 8,
+   "clock": "14:20",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 7895,
+   "request_id": "req_01a0c37fca747c9a8e5214982f9e567b",
+   "deferred": [
+    "agv-3"
+   ]
+  },
+  {
+   "tick": 9,
+   "clock": "14:30",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 7928,
+   "request_id": "req_01a0c37ff593715ab315142549c9b1e4",
+   "deferred": [
+    "agv-3"
+   ]
+  },
+  {
+   "tick": 10,
+   "clock": "14:40",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 7935,
+   "request_id": "req_01a0c3801e407bf99239dc7aa6f35952",
+   "deferred": []
+  },
+  {
+   "tick": 11,
+   "clock": "14:50",
+   "status": "ok",
+   "cached": false,
+   "input_tokens": 8043,
+   "request_id": "req_01a0c38037e975bf9ed4c18b03a56935",
+   "deferred": []
+  }
+ ]
+}

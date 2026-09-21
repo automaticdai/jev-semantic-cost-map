@@ -1,0 +1,147 @@
+{
+ "shift": {
+  "name": "night-shift",
+  "clock": "13:10",
+  "tick": 1
+ },
+ "zones": {
+  "junction-1": {
+   "name": "North-west cross corridor",
+   "kind": "cross corridor",
+   "description": "North cross corridor serving aisles 1 to 3, shared with foot traffic from the office door.",
+   "notes": []
+  },
+  "junction-2": {
+   "name": "North-east cross corridor",
+   "kind": "cross corridor",
+   "description": "North cross corridor serving aisles 4 to 6 and the goods-in door.",
+   "notes": []
+  },
+  "junction-3": {
+   "name": "South-west cross corridor",
+   "kind": "cross corridor",
+   "description": "South cross corridor serving aisles 1 to 3 and the pick bays.",
+   "notes": []
+  },
+  "junction-4": {
+   "name": "South-east cross corridor",
+   "kind": "cross corridor",
+   "description": "South cross corridor serving aisles 4 to 6, staging and the charging bank.",
+   "notes": []
+  },
+  "aisle-1": {
+   "name": "Aisle 1",
+   "kind": "travel lane",
+   "description": "Travel lane between pallet racking, rated for AGV traffic.",
+   "notes": []
+  },
+  "aisle-2": {
+   "name": "Aisle 2",
+   "kind": "travel lane",
+   "description": "Travel lane between pallet racking, rated for AGV traffic. Low shelves on the west side are picked by hand.",
+   "notes": []
+  },
+  "aisle-3": {
+   "name": "Aisle 3",
+   "kind": "travel lane",
+   "description": "Travel lane between pallet racking, rated for AGV traffic.",
+   "notes": [
+    "13:08 Pallet wrap spill reported at the north end of aisle 3. Nobody has been out to it yet."
+   ]
+  },
+  "aisle-4": {
+   "name": "Aisle 4",
+   "kind": "travel lane",
+   "description": "Travel lane between pallet racking, rated for AGV traffic.",
+   "notes": []
+  },
+  "aisle-5": {
+   "name": "Aisle 5",
+   "kind": "travel lane",
+   "description": "Travel lane between pallet racking, rated for AGV traffic.",
+   "notes": []
+  },
+  "aisle-6": {
+   "name": "Aisle 6",
+   "kind": "travel lane",
+   "description": "Travel lane between pallet racking, rated for AGV traffic. The widest lane on the floor.",
+   "notes": []
+  },
+  "bay-A": {
+   "name": "Pick bay A",
+   "kind": "pick bay",
+   "description": "Pick bay on the west wall with a marked AGV drop point and a walkway behind the racks.",
+   "notes": []
+  },
+  "bay-B": {
+   "name": "Pick bay B",
+   "kind": "pick bay",
+   "description": "Pick bay on the west wall with a marked AGV drop point and a walkway behind the racks.",
+   "notes": []
+  },
+  "staging-7": {
+   "name": "Staging 7",
+   "kind": "staging floor",
+   "description": "Floor staging for goods waiting to be put away. Pallets stand directly on the deck.",
+   "notes": []
+  },
+  "charging": {
+   "name": "Charging bank",
+   "kind": "charging",
+   "description": "AGV charging bank. No stock is kept here and no one works in it during a shift.",
+   "notes": []
+  }
+ },
+ "agvs": {
+  "agv-1": {
+   "position": "junction-1",
+   "committed_route": [
+    "junction-1",
+    "junction-2",
+    "aisle-6",
+    "staging-7"
+   ],
+   "route_from_tick": 0
+  },
+  "agv-2": {
+   "position": "aisle-6",
+   "committed_route": [
+    "aisle-6",
+    "junction-2",
+    "aisle-4",
+    "junction-2",
+    "junction-1",
+    "aisle-1",
+    "bay-B"
+   ],
+   "route_from_tick": 0
+  },
+  "agv-3": {
+   "position": "aisle-1",
+   "committed_route": [
+    "aisle-1",
+    "junction-3",
+    "aisle-3",
+    "junction-3",
+    "junction-4",
+    "aisle-6",
+    "charging"
+   ],
+   "route_from_tick": 0
+  },
+  "agv-4": {
+   "position": "charging",
+   "committed_route": [
+    "charging",
+    "aisle-6",
+    "junction-2",
+    "aisle-5",
+    "junction-2",
+    "junction-1",
+    "aisle-1",
+    "bay-A"
+   ],
+   "route_from_tick": 0
+  }
+ }
+}

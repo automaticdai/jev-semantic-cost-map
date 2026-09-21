@@ -1,0 +1,772 @@
+{
+ "junction-1.people": {
+  "type": "score",
+  "score": 0.92,
+  "confidence": 0.9,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.09,
+   "1": 0.91,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "junction-1.damage": {
+  "type": "score",
+  "score": 0.01,
+  "confidence": 0.99,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 0.99,
+   "1": 0.0,
+   "2": 0.01,
+   "3": 0.0
+  }
+ },
+ "junction-1.delay": {
+  "type": "score",
+  "score": 0.5,
+  "confidence": 0.5,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.54,
+   "1": 0.44,
+   "2": 0.02,
+   "3": 0.0
+  }
+ },
+ "junction-1.offlimits": {
+  "type": "noul",
+  "noul": 0.06
+ },
+ "junction-2.people": {
+  "type": "score",
+  "score": 0.6,
+  "confidence": 0.58,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.41,
+   "1": 0.59,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "junction-2.damage": {
+  "type": "score",
+  "score": 0.03,
+  "confidence": 0.97,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 0.99,
+   "1": 0.0,
+   "2": 0.01,
+   "3": 0.0
+  }
+ },
+ "junction-2.delay": {
+  "type": "score",
+  "score": 0.37,
+  "confidence": 0.63,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.7,
+   "1": 0.25,
+   "2": 0.05,
+   "3": 0.0
+  }
+ },
+ "junction-2.offlimits": {
+  "type": "noul",
+  "noul": 0.06
+ },
+ "junction-3.people": {
+  "type": "score",
+  "score": 0.64,
+  "confidence": 0.36,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.45999999999999996,
+   "1": 0.44,
+   "2": 0.08,
+   "3": 0.02
+  }
+ },
+ "junction-3.damage": {
+  "type": "score",
+  "score": 0.13,
+  "confidence": 0.87,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 0.9,
+   "1": 0.07,
+   "2": 0.03,
+   "3": 0.0
+  }
+ },
+ "junction-3.delay": {
+  "type": "score",
+  "score": 0.07,
+  "confidence": 0.93,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.94,
+   "1": 0.05,
+   "2": 0.01,
+   "3": 0.0
+  }
+ },
+ "junction-3.offlimits": {
+  "type": "noul",
+  "noul": 0.05
+ },
+ "junction-4.people": {
+  "type": "score",
+  "score": 2.52,
+  "confidence": 0.52,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.08,
+   "1": 0.1,
+   "2": 0.05,
+   "3": 0.77
+  }
+ },
+ "junction-4.damage": {
+  "type": "score",
+  "score": 2.39,
+  "confidence": 0.55,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 0.02,
+   "1": 0.0,
+   "2": 0.56,
+   "3": 0.42
+  }
+ },
+ "junction-4.delay": {
+  "type": "score",
+  "score": 2.91,
+  "confidence": 0.91,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.0,
+   "1": 0.0,
+   "2": 0.08,
+   "3": 0.92
+  }
+ },
+ "junction-4.offlimits": {
+  "type": "noul",
+  "noul": 0.94
+ },
+ "aisle-1.people": {
+  "type": "score",
+  "score": 0.21,
+  "confidence": 0.79,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.8,
+   "1": 0.2,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "aisle-1.damage": {
+  "type": "score",
+  "score": 0.01,
+  "confidence": 0.99,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 1.0,
+   "1": 0.0,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "aisle-1.delay": {
+  "type": "score",
+  "score": 1.16,
+  "confidence": 0.13,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.27,
+   "1": 0.32,
+   "2": 0.39,
+   "3": 0.02
+  }
+ },
+ "aisle-1.offlimits": {
+  "type": "noul",
+  "noul": 0.05
+ },
+ "aisle-2.people": {
+  "type": "score",
+  "score": 0.93,
+  "confidence": 0.85,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.11,
+   "1": 0.87,
+   "2": 0.0,
+   "3": 0.02
+  }
+ },
+ "aisle-2.damage": {
+  "type": "score",
+  "score": 0.09,
+  "confidence": 0.91,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 0.94,
+   "1": 0.03,
+   "2": 0.03,
+   "3": 0.0
+  }
+ },
+ "aisle-2.delay": {
+  "type": "score",
+  "score": 0.02,
+  "confidence": 0.98,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.98,
+   "1": 0.02,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "aisle-2.offlimits": {
+  "type": "noul",
+  "noul": 0.05
+ },
+ "aisle-3.people": {
+  "type": "score",
+  "score": 0.61,
+  "confidence": 0.59,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.4,
+   "1": 0.6,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "aisle-3.damage": {
+  "type": "score",
+  "score": 0.05,
+  "confidence": 0.95,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 0.98,
+   "1": 0.0,
+   "2": 0.01,
+   "3": 0.01
+  }
+ },
+ "aisle-3.delay": {
+  "type": "score",
+  "score": 0.01,
+  "confidence": 0.99,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.99,
+   "1": 0.01,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "aisle-3.offlimits": {
+  "type": "noul",
+  "noul": 0.07
+ },
+ "aisle-4.people": {
+  "type": "score",
+  "score": 0.14,
+  "confidence": 0.86,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.87,
+   "1": 0.13,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "aisle-4.damage": {
+  "type": "score",
+  "score": 0.0,
+  "confidence": 1.0,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 1.0,
+   "1": 0.0,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "aisle-4.delay": {
+  "type": "score",
+  "score": 0.01,
+  "confidence": 0.99,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.99,
+   "1": 0.01,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "aisle-4.offlimits": {
+  "type": "noul",
+  "noul": 0.04
+ },
+ "aisle-5.people": {
+  "type": "score",
+  "score": 0.75,
+  "confidence": 0.6,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.33,
+   "1": 0.63,
+   "2": 0.01,
+   "3": 0.03
+  }
+ },
+ "aisle-5.damage": {
+  "type": "score",
+  "score": 2.76,
+  "confidence": 0.76,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 0.03,
+   "1": 0.01,
+   "2": 0.14,
+   "3": 0.82
+  }
+ },
+ "aisle-5.delay": {
+  "type": "score",
+  "score": 1.18,
+  "confidence": 0.56,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.13,
+   "1": 0.62,
+   "2": 0.19,
+   "3": 0.06
+  }
+ },
+ "aisle-5.offlimits": {
+  "type": "noul",
+  "noul": 0.44
+ },
+ "aisle-6.people": {
+  "type": "score",
+  "score": 0.27,
+  "confidence": 0.73,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.73,
+   "1": 0.27,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "aisle-6.damage": {
+  "type": "score",
+  "score": 0.0,
+  "confidence": 1.0,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 1.0,
+   "1": 0.0,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "aisle-6.delay": {
+  "type": "score",
+  "score": 0.59,
+  "confidence": 0.41,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.6,
+   "1": 0.21,
+   "2": 0.18,
+   "3": 0.01
+  }
+ },
+ "aisle-6.offlimits": {
+  "type": "noul",
+  "noul": 0.05
+ },
+ "bay-A.people": {
+  "type": "score",
+  "score": 0.41,
+  "confidence": 0.59,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.6,
+   "1": 0.4,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "bay-A.damage": {
+  "type": "score",
+  "score": 0.03,
+  "confidence": 0.97,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 0.98,
+   "1": 0.02,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "bay-A.delay": {
+  "type": "score",
+  "score": 0.06,
+  "confidence": 0.94,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.95,
+   "1": 0.04,
+   "2": 0.01,
+   "3": 0.0
+  }
+ },
+ "bay-A.offlimits": {
+  "type": "noul",
+  "noul": 0.06
+ },
+ "bay-B.people": {
+  "type": "score",
+  "score": 0.66,
+  "confidence": 0.63,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.36,
+   "1": 0.63,
+   "2": 0.01,
+   "3": 0.0
+  }
+ },
+ "bay-B.damage": {
+  "type": "score",
+  "score": 0.32,
+  "confidence": 0.68,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 0.68,
+   "1": 0.31,
+   "2": 0.01,
+   "3": 0.0
+  }
+ },
+ "bay-B.delay": {
+  "type": "score",
+  "score": 0.16,
+  "confidence": 0.84,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.91,
+   "1": 0.04,
+   "2": 0.04,
+   "3": 0.01
+  }
+ },
+ "bay-B.offlimits": {
+  "type": "noul",
+  "noul": 0.13
+ },
+ "staging-7.people": {
+  "type": "score",
+  "score": 0.6,
+  "confidence": 0.54,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 0.43,
+   "1": 0.55,
+   "2": 0.01,
+   "3": 0.01
+  }
+ },
+ "staging-7.damage": {
+  "type": "score",
+  "score": 2.47,
+  "confidence": 0.49,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 0.01,
+   "1": 0.01,
+   "2": 0.49,
+   "3": 0.49
+  }
+ },
+ "staging-7.delay": {
+  "type": "score",
+  "score": 1.14,
+  "confidence": 0.54,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.16,
+   "1": 0.57,
+   "2": 0.23,
+   "3": 0.04
+  }
+ },
+ "staging-7.offlimits": {
+  "type": "noul",
+  "noul": 0.15
+ },
+ "charging.people": {
+  "type": "score",
+  "score": 0.01,
+  "confidence": 0.99,
+  "legend": {
+   "0": "No one works in this zone and no one is expected in it during this shift.",
+   "1": "People pass through occasionally but no one is working here now.",
+   "2": "People are working in this zone now, clear of the travel lane.",
+   "3": "People are working in or across the travel lane, where an AGV would pass."
+  },
+  "probabilities": {
+   "0": 1.0,
+   "1": 0.0,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "charging.damage": {
+  "type": "score",
+  "score": 0.0,
+  "confidence": 1.0,
+  "legend": {
+   "0": "Nothing here is vulnerable; a clear, rated travel surface.",
+   "1": "Goods are present but robust and clear of the lane.",
+   "2": "Fragile goods, loose material, or an obstruction sits close to the lane.",
+   "3": "The surface or the load is compromised in a way that makes a pass likely to cause damage or a loss of traction."
+  },
+  "probabilities": {
+   "0": 1.0,
+   "1": 0.0,
+   "2": 0.0,
+   "3": 0.0
+  }
+ },
+ "charging.delay": {
+  "type": "score",
+  "score": 0.13,
+  "confidence": 0.87,
+  "legend": {
+   "0": "Clear; an AGV passes at full speed.",
+   "1": "Light traffic or a narrow point; a short slowdown.",
+   "2": "Busy; an AGV would likely have to stop and wait.",
+   "3": "Effectively impassable without a long wait."
+  },
+  "probabilities": {
+   "0": 0.92,
+   "1": 0.04,
+   "2": 0.03,
+   "3": 0.01
+  }
+ },
+ "charging.offlimits": {
+  "type": "noul",
+  "noul": 0.12
+ }
+}
