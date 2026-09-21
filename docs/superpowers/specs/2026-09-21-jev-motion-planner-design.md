@@ -323,7 +323,13 @@ runs/2026-09-21T14-02-night-shift/
   states/t00.json    the exact state sent
   questions/t00.json the exact questions sent
   answers/t00.json   the raw response, every probability and confidence
-  costs/t00.npz      jev and baseline cost layers
+  costs/t00.json     jev and baseline per-zone multipliers and blocked flags
+                     (not the rasterized grid: `rasterize()` rebuilds that
+                     deterministically from these, so json is smaller,
+                     diffable, and provably consistent with what was
+                     actually planned over -- an implementation improvement
+                     over this doc's original `.npz`, kept as the record of
+                     what shipped)
   plans/t00.json     per-AGV paths and deferrals, both models
   truth/t00.json     the hidden labels, copied in for scoring
   frames/t00.png

@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import sys
+from pathlib import Path
 
 from .baseline import load_rules
 from .costs import load_weights
@@ -95,14 +96,34 @@ def _cmd_replay(args) -> int:
 
 def _open(path):
     run = RunDir.open(path)
-    return run, load_scenario(run.read_manifest()["scenario_path"])
+    scenario_path = run.read_manifest()["scenario_path"]
+    candidate = Path(scenario_path)
+    if not candidate.exists():
+        # The manifest stores the scenario path as typed at `run` time, which
+        # is almost always relative to the repo root. That resolves fine when
+        # an offline command is also run from the repo root, but not from
+        # elsewhere. `run.root.parent.parent` is the repo root for the common
+        # case of a run directory under `runs/<when>-<name>/` -- try the
+        # scenario path relative to that before giving up. The manifest still
+        # stores the relative path either way, so it stays machine-independent.
+        alternate = run.root.parent.parent / scenario_path
+        if alternate.exists():
+            candidate = alternate
+    return run, load_scenario(candidate)
 
 
 def _cmd_explain(args) -> int:
     from .report import explain_text
 
     run, scenario = _open(args.run)
-    print(explain_text(scenario, run, args.zone, args.tick))
+    try:
+        print(explain_text(scenario, run, args.zone, args.tick))
+    except KeyError:
+        print(f"explain: no zone named {args.zone!r} in this scenario", file=sys.stderr)
+        return 2
+    except FileNotFoundError:
+        print(f"explain: no tick {args.tick} recorded in {run.root}", file=sys.stderr)
+        return 2
     return 0
 
 
@@ -110,7 +131,11 @@ def _cmd_disagree(args) -> int:
     from .report import disagree_text
 
     run, scenario = _open(args.run)
-    print(disagree_text(scenario, run))
+    try:
+        print(disagree_text(scenario, run))
+    except (KeyError, FileNotFoundError) as error:
+        print(f"disagree: could not read {run.root}: {error}", file=sys.stderr)
+        return 2
     return 0
 
 

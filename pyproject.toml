@@ -15,7 +15,11 @@ dependencies = [
 jev-planner = "jev_planner.cli:main"
 
 [dependency-groups]
-dev = ["pytest>=8.0"]
+# httpx2 is used directly by tests/test_shift.py (to build a TypeSafeAPIError's
+# httpx2.Headers()). It already arrives transitively via typesafe-sdk, but a
+# test importing it directly should declare it rather than rely on another
+# package's dependency graph.
+dev = ["pytest>=8.0", "httpx2>=2.13"]
 
 [build-system]
 requires = ["hatchling"]

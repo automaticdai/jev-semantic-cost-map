@@ -21,3 +21,10 @@ def test_run_without_an_api_key_fails_with_a_useful_message(capsys, monkeypatch,
 
 def test_unknown_command_is_an_error():
     assert main(["nonsense"]) != 0
+
+
+def test_explain_on_an_unknown_zone_fails_cleanly(capsys):
+    code = main(["explain", "runs/example-night-shift", "--zone", "nowhere"])
+    assert code == 2
+    err = capsys.readouterr().err
+    assert "nowhere" in err
